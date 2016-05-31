@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Checker Board</title>
+		
+		<script src="mootools-1.4.5.js"></script>
+		<script src="corridor.js"></script>
+		
+		<style>
+			#corridor_old {
+				border: 1px solid black;
+			}
+		</style>
+	</head>
+	
+	<body>
+	    <div class="gameboard">
+            <canvas id="corridor" width="400" height="400">
+            </canvas>	
+            <select id="moveType">
+              <option value="move">Move Player</option>
+              <option value="h_wall">Horizontal Wall</option>
+              <option value="v_wall">Vertical Wall</option>
+            </select>
+        </div>
+        <div>Player 1 Walls Remaining:<span id="p1_walls"></span></div>
+        <div>Player 2 Walls Remaining:<span id="p2_walls"></span></div>
+	</body>
+</html>

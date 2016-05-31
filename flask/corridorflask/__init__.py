@@ -15,6 +15,10 @@ def build_response(board):
     response['players'] = [{'position':player.position,'walls':player.walls,'goal':player.goal} for player in board.players]
     response['walls_v'] = list(board.walls['v'])
     response['walls_h'] = list(board.walls['h'])
+    response['winner'] = ''
+    for player in range(len(board.players)):
+      if board.check_player_goal_status(player):
+	response['winner'] = player
     print response['players']
     return flask.jsonify(response)
 
