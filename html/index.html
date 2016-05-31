@@ -1,29 +1,70 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Checker Board</title>
-		
-		<script src="mootools-1.4.5.js"></script>
+		<title>Corridor - V0.10</title>
 		<script src="corridor.js"></script>
 		
 		<style>
-			#corridor_old {
-				border: 1px solid black;
+      body {
+        width: 800px;
+        margin-left: auto ;
+        margin-right: auto ;
+        border: 1px solid black
+      }
+      #header {
+        text-align: center;
+        font-size: 50px;
+        border-bottom: 1px solid gray;
+        
+      }
+      #content {
+        padding: 5px
+      }
+      #gameDetails {
+        width: 195px;
+        float: left;
+      }
+      #gameboard {
+        padding: 0;
+        width:385px;
+        display: inline-block;
+        border: 2px solid gray;
 			}
+			#walltype {
+				width: 80px;
+        height: 80px;
+        border: 1px solid black;
+			}
+      #moveList {
+        float: right; 
+        width: 195px;
+      }
 		</style>
 	</head>
 	
 	<body>
-	    <div class="gameboard">
-            <canvas id="corridor" width="400" height="400">
-            </canvas>	
-            <select id="moveType">
-              <option value="move">Move Player</option>
-              <option value="h_wall">Horizontal Wall</option>
-              <option value="v_wall">Vertical Wall</option>
-            </select>
-        </div>
+    <div id="header">
+      Corridor
+    </div>
+    <div id="content">
+      <div id="gameDetails">
+        <div id="wallselector">
+          Wall Type:
+          <canvas id="walltype">
+          </canvas>
+        </div>  
+        <br/>
+        <br/>
         <div>Player 1 Walls Remaining:<span id="p1_walls"></span></div>
         <div>Player 2 Walls Remaining:<span id="p2_walls"></span></div>
+      </div>
+      <div id="gameboard">
+        <canvas id="corridor">
+        </canvas>	      
+      </div>
+      <div id="moveList">
+        Move List
+      </div>
+    </div>
 	</body>
 </html>

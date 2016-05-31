@@ -4,13 +4,29 @@
 // should be same search as computer does when evaluating.
 
 var size = 9
-var cell_width = 30
-var wall_width = 10
+var cell_width = 33
+var wall_width = 11
 var current_board = {}
 var move_num = 1
+var wall_type = "H"
 
-window.addEvent("domready", initializeBoard);
+window.onload = initializeBoard;
 
+
+function renderWallSelector() {
+    var walltype = document.getElementById("walltype");
+    walltype.setAttribute('width', 2*cell_width);
+    walltype.setAttribute('height', 2*cell_width);
+    var wallContext = walltype.getContext("2d");
+    wallContext.fillStyle = "black";
+    center = cell_width - (wall_width / 2)
+    if (wall_type == "H") {
+      wallContext.fillRect(0, center, 2* cell_width,wall_width);
+    } else if (wall_type == "V") {      
+      wallContext.fillRect(center, 0, wall_width, 2*cell_width);
+    }
+  
+};
 var getJSON = function(url, callback) {
     var xhr = new XMLHttpRequest();
     xhr.open("get", url, true);
@@ -42,6 +58,17 @@ var postJSON = function(url,body,callback) {
 };
 function initializeBoard(board)
 {
+    var wallselector = document.getElementById('wallselector');
+
+    wallselector.style.cursor = 'pointer';
+    wallselector.onclick = function() {
+        if (wall_type == "H") {
+          wall_type = "V";
+        } else if (wall_type == "V") {
+          wall_type = "H"
+        }
+        renderWallSelector();
+    };
     getJSON("http://tools.zensky.com/corridor/get_board",
     function(err, data) {
           if (err != null) {
@@ -123,9 +150,6 @@ function boardClicked(event) {
     var x = event.pageX - elemLeft
     var y = event.pageY - elemTop
     
-    var moveType = document.getElementById("moveType");
-    console.log(moveType.value)
-    
     // cells are 30 and walls are 10 and come together,
     // divide by the combined width then determine which wall
     click_x = Math.floor(x / (cell_width + wall_width))
@@ -138,22 +162,26 @@ function boardClicked(event) {
     if (y % (cell_width + wall_width) > cell_width) {
         wall_y = true
     }
-    if (!wall_x & !wall_y & moveType.value == "move") {
+    if (!wall_x & !wall_y) {
         //alert('move piece: (' + click_x + ',' + click_y + ')')
         makeMove(current_board,click_x,click_y)
     } else if (wall_x & wall_y) {
         //alert('place wall: (' + click_x + ',' + click_y + ')')
-        if (moveType.value == "h_wall") {
+        if (wall_type == "H") {
             placeWall(current_board,"h",click_x,click_y)
-        } else if (moveType.value == "v_wall"){        
+        } else if (wall_type == "V"){        
             placeWall(current_board,"v",click_x,click_y)
         }
     }
 
 }
+
 function renderBoard(board)
 { 
     var canvas = document.getElementById("corridor");
+    var totalWidth = size * cell_width + (size -1) * wall_width
+    canvas.setAttribute('width', totalWidth);
+    canvas.setAttribute('height', totalWidth);
     canvas.addEventListener('click', boardClicked, false);
     var context2D = canvas.getContext("2d");
 
@@ -174,10 +202,10 @@ function renderBoard(board)
                   width = cell_width
             }
       
-              // We'll use black unless there is a wall
+            // We'll use black unless there is a wall
             context2D.fillStyle = "black";    
             for (var wall = 0; wall < board.walls_h.length; wall++) {
-                  pos = board.walls_h[wall]
+                pos = board.walls_h[wall]
                 if ((row - 1)/ 2 == pos[1] && column  >= 2*pos[0] && column <= 2*pos[0]+2)
                 {
                     context2D.fillStyle = "white";
@@ -190,8 +218,7 @@ function renderBoard(board)
                 }
             }
             context2D.fillRect(col_offset, row_offset, width-1,height-1);
-      
-      
+            
             for (var player = 0; player < board.players.length; player++)
             {
                 pos = board.players[player].position
@@ -215,7 +242,9 @@ function renderBoard(board)
     }
     document.getElementById("p1_walls").textContent=board.players[0].walls;
     document.getElementById("p2_walls").textContent=board.players[1].walls;
-    if (board.winner != "") {
+    
+    renderWallSelector();
+    if (board.winner) {
         alert("Player " + (board.winner + 1) + " Wins!")
     }
 }
