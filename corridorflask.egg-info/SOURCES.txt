@@ -1,6 +1,0 @@
-setup.py
-corridorflask/__init__.py
-corridorflask.egg-info/PKG-INFO
-corridorflask.egg-info/SOURCES.txt
-corridorflask.egg-info/dependency_links.txt
-corridorflask.egg-info/top_level.txt
