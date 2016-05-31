@@ -1,7 +1,7 @@
 import flask
 import json
 import sys
-from flask import Flask,render_template, request, jsonify
+from flask import Flask,render_template, request, jsonify, abort
 from Corridor import Board,Player
 from CorridorBot import CorridorBot
 app = Flask(__name__)
@@ -18,12 +18,19 @@ def build_response(board):
     print response['players']
     return flask.jsonify(response)
 
-#I just want to be able to manipulate the parameters
 @app.route('/get_board', methods=['GET'])
 def get_board():
-    b = Board(9,[Player((4,0),8,('h',8)),
-                 Player((4,8),8,('h',0))])
-    return build_response(b)
+    return build_response(build_board())
+
+def build_board(board=None):
+    if not board:
+        b = Board(9,[Player((4,0),8,('h',8)),
+                     Player((4,8),8,('h',0))])
+    else:
+        b = Board(9,[Player(p['position'],p['walls'],p['goal']) for p in board['players']])
+        b.walls['v'] = set([tuple(wall) for wall in board['walls_v']])
+        b.walls['h'] = set([tuple(wall) for wall in board['walls_h']])
+    return b
 
 if __name__ == "__main__":
     app.run()
@@ -31,53 +38,47 @@ if __name__ == "__main__":
 
 @app.route('/make_move', methods=['POST'])
 def make_move():
-    # Get the parsed contents of the form data
-    board = request.json['board']
     x = request.json['x']
     y = request.json['y']
     player = request.json['player']
-    b = Board(9,[Player(p['position'],p['walls'],p['goal']) for p in board['players']])
-    b.walls['v'] = set([tuple(wall) for wall in board['walls_v']])
-    b.walls['h'] = set([tuple(wall) for wall in board['walls_h']])
-    print b.players[player].position,x,y
-    b.move_player(player,x,y,trace=True)
-
+    b = build_board(request.json['board'])
+    try:
+        b.move_player(player,x,y,trace=True)
+    except:
+	abort(400,str(sys.exc_info()[1]))
     return build_response(b)
 
 @app.route('/place_wall', methods=['POST'])
 def place_wall():
-    # Get the parsed contents of the form data
-    board = request.json['board']
     x = request.json['x']
     y = request.json['y']
     player = request.json['player']
     orientation = request.json['orientation']
-    b = Board(9,[Player(p['position'],p['walls'],p['goal']) for p in board['players']])
-    b.walls['v'] = set([tuple(wall) for wall in board['walls_v']])
-    b.walls['h'] = set([tuple(wall) for wall in board['walls_h']])
-    b.add_wall(orientation,x,y,player)
+    try:
+        b = build_board(request.json['board'])
+        b.add_wall(orientation,x,y,player)
+    except:
+        abort(400,str(sys.exc_info()[1]))
 
     return build_response(b)
 
 @app.route('/bot_move', methods=['POST'])
 def bot_move():
-    board = request.json['board']
     player = request.json['player']
     opponent = request.json['opponent']
     move_num = request.json['move_num']
-    b = Board(9,[Player(p['position'],p['walls'],p['goal']) for p in board['players']])
-    b.walls['v'] = set([tuple(wall) for wall in board['walls_v']])
-    b.walls['h'] = set([tuple(wall) for wall in board['walls_h']])
-
-    #try:
-    if True:
+    b = build_board(request.json['board'])
+    try:
 	bot = CorridorBot()
 	bot.make_move(b,player,opponent,move_num,trace=False)
-    #except:
-    #   print(sys.exc_info())
-
+    except:
+	abort(400,str(sys.exc_info()[1]))
     return build_response(b)
 
+@app.errorhandler(400)
+def custom400(error):
+    response = jsonify({'message': error.description})
+    return response,400
 
 if __name__ == "__main__":
     app.run()
