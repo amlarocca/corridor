@@ -1,6 +1,0 @@
-setup.py
-CorridorBot/__init__.py
-CorridorBot.egg-info/PKG-INFO
-CorridorBot.egg-info/SOURCES.txt
-CorridorBot.egg-info/dependency_links.txt
-CorridorBot.egg-info/top_level.txt
