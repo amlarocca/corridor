@@ -10,6 +10,8 @@ from CorridorBot import CorridorBot
 app = Flask(__name__)
 app.debug = True
 
+r = None
+
 @app.route("/")
 def hello():
     return "Hello World!"
