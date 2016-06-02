@@ -36,7 +36,7 @@ def build_response(game_id,board):
 def get_board():
     game_id = request.args.get('game_id')
     try:        
-        if game_id != '':
+        if game_id and game_id != '':
             b = get_board_from_redis(game_id)
         else:
             game_id = get_game_id()
