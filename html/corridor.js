@@ -14,6 +14,15 @@ var botDelay = 500
 
 window.onload = initializeBoard;
 
+function getParameterByName(name) {
+    var url = window.location.href;
+    name = name.replace(/[\[\]]/g, "\\$&");
+    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, " "));
+}
 
 function initializeBoard()
 {
@@ -46,6 +55,10 @@ function initializeBoard()
 
 function setupBoard()
 {
+    // get game_id from url, if available
+    // get player_number from url, if available
+    game_id = getParameterByName('game_id')
+    data.game_id = game_id
     getJSON("http://tools.zensky.com/corridor/get_board",
     function(err, data) {
           if (err != null) {

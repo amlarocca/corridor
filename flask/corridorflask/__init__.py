@@ -34,7 +34,16 @@ def build_response(game_id,board):
 
 @app.route('/get_board', methods=['GET'])
 def get_board():
-    return build_response(get_game_id(),build_board())
+    game_id = request.json['game_id']
+    try:        
+        if game_id:
+            b = get_board_from_redis(game_id)
+        else:
+            game_id = get_game_id()
+            b = build_board(request.json['board'])
+    except:
+        abort(400,str(sys.exc_info())) 
+    return build_response(game_id,b)
 
 def build_board(board=None):
     if not board:
