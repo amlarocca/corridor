@@ -55,12 +55,12 @@ def get_game_id():
     return binascii.b2a_hex(os.urandom(15))
     
 def write_board_to_redis(board,game_id):
-    if not r:
+    if r is None:
         connect_to_redis()
     return pickle.dumps(r.set(game_id,board))
     
 def get_board_from_redis(game_id):
-    if not r:
+    if r is None:
         connect_to_redis()
     return pickle.loads(r.get(game_id))
 
