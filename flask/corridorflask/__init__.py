@@ -48,22 +48,21 @@ def build_board(board=None):
         b.status = board['status']
     return b
 
-def connect_to_redis():
-    r = redis.StrictRedis(host='127.0.0.1', port=6379)
-    print 'Connected to redis:',r.client_list()
+def get_redis():
+    global r
+    if r is None:
+        r = redis.StrictRedis(host='127.0.0.1', port=6379)
+        print 'Connected to redis:',r.client_list()
+    return r
     
 def get_game_id():
     return binascii.b2a_hex(os.urandom(15))
     
 def write_board_to_redis(board,game_id):
-    if r is None:
-        connect_to_redis()
-    return pickle.dumps(r.set(game_id,board))
+    return pickle.dumps(get_redis().set(game_id,board))
     
 def get_board_from_redis(game_id):
-    if r is None:
-        connect_to_redis()
-    return pickle.loads(r.get(game_id))
+    return pickle.loads(get_redis().get(game_id))
 
 @app.route('/make_move', methods=['POST'])
 def make_move():
