@@ -62,7 +62,9 @@ def write_board_to_redis(game_id,board):
     return pickle.dumps(get_redis().set(game_id,board))
     
 def get_board_from_redis(game_id):
-    return pickle.loads(get_redis().get(game_id))
+    board = pickle.loads(get_redis().get(game_id))
+    print board
+    return board
 
 @app.route('/make_move', methods=['POST'])
 def make_move():
@@ -79,7 +81,7 @@ def make_move():
         b.move_player(player,x,y,trace=True)
         b.status = "active"
     except:
-        abort(400,str(sys.exc_info()[1]))
+        abort(400,str(sys.exc_info()))
     return build_response(get_game_id,b)
 
 @app.route('/place_wall', methods=['POST'])
@@ -99,7 +101,7 @@ def place_wall():
         b.add_wall(orientation,x,y,player)
         b.status = "active"
     except:
-        abort(400,str(sys.exc_info()[1]))
+        abort(400,str(sys.exc_info()))
 
     return build_response(game_id,b)
 
@@ -119,7 +121,7 @@ def bot_move():
         bot.make_move(b,player,opponent,move_num,trace=False)
         b.status = "active"
     except:
-        abort(400,str(sys.exc_info()[1]))
+        abort(400,str(sys.exc_info()))
     return build_response(game_id,b)
 
 @app.errorhandler(400)

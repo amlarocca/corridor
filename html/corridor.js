@@ -110,7 +110,8 @@ var postJSON = function(url,body,callback) {
 function botMove()
 {
     data = {}
-    data.board = current_board
+    //data.board = current_board
+    data.game_id = current_board.game_id
     data.player = (player_number + 1) % 2
     data.opponent = player_number
     data.move_num = move_num
@@ -132,7 +133,8 @@ function botMove()
 function makeMove(board,x,y)
 {
     data = {}
-    data.board = board
+    //data.board = board
+    data.game_id = current_board.game_id
     data.x = x
     data.y = y
     data.player = player_number
@@ -153,7 +155,8 @@ function makeMove(board,x,y)
 function placeWall(board,orientation, x,y)
 {
     data = {}
-    data.board = board
+    //data.board = board
+    data.game_id = current_board.game_id
     data.x = x
     data.y = y
     data.player = player_number
@@ -200,9 +203,9 @@ function boardClicked(event) {
         } else if (wall_x & wall_y) {
             //alert('place wall: (' + click_x + ',' + click_y + ')')
             if (wall_type == "H") {
-                placeWall(current_board,"h",click_x,click_y)
+                placeWall("h",click_x,click_y)
             } else if (wall_type == "V"){        
-                placeWall(current_board,"v",click_x,click_y)
+                placeWall("v",click_x,click_y)
             }
         }
     }
