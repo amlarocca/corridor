@@ -108,7 +108,6 @@ def place_wall():
         else:
             game_id = get_game_id()
             b = build_board(request.json['board'])
-        b = build_board(request.json['board'])
         b.add_wall(orientation,x,y,player)
         b.status = "active"
     except:

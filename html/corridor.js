@@ -169,13 +169,13 @@ function makeMove(board,x,y)
     });
 }
 
-function placeWall(board,orientation, x,y)
+function placeWall(orientation, x,y)
 {
     data = {}
     //data.board = board
-    data.game_id = current_board.game_id
-    data.x = x
-    data.y = y
+    data.game_id = current_board.game_id;
+    data.x = x;
+    data.y = y;
     data.player = player_number
     data.orientation = orientation
     postJSON("http://tools.zensky.com/corridor/place_wall",data,
