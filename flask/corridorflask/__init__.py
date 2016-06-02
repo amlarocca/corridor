@@ -34,7 +34,7 @@ def build_response(game_id,board):
 
 @app.route('/get_board', methods=['GET'])
 def get_board():
-    game_id request.args.get('game_id')
+    game_id = request.args.get('game_id')
     try:        
         if game_id != '':
             b = get_board_from_redis(game_id)
