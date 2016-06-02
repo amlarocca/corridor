@@ -21,6 +21,8 @@ def build_response(board):
     for player in range(len(board.players)):
         if board.check_player_goal_status(player):
             response['winner'] = player
+            board.status = "completed"
+    response['status'] = board.status
     return flask.jsonify(response)
 
 @app.route('/get_board', methods=['GET'])
@@ -36,6 +38,7 @@ def build_board(board=None):
         b.walls['v'] = set([tuple(wall) for wall in board['walls_v']])
         b.walls['h'] = set([tuple(wall) for wall in board['walls_h']])
         b.current_player = board['current_player']
+        b.status = board['status']
     return b
 
 if __name__ == "__main__":
@@ -50,6 +53,7 @@ def make_move():
     b = build_board(request.json['board'])
     try:
         b.move_player(player,x,y,trace=True)
+        b.status = "active"
     except:
         abort(400,str(sys.exc_info()[1]))
     return build_response(b)
@@ -63,6 +67,7 @@ def place_wall():
     try:
         b = build_board(request.json['board'])
         b.add_wall(orientation,x,y,player)
+        b.status = "active"
     except:
         abort(400,str(sys.exc_info()[1]))
 
@@ -77,6 +82,7 @@ def bot_move():
     try:
         bot = CorridorBot()
         bot.make_move(b,player,opponent,move_num,trace=False)
+        b.status = "active"
     except:
         abort(400,str(sys.exc_info()[1]))
     return build_response(b)
