@@ -3,14 +3,10 @@
 # TODO
 
 Game Libary:
-- Return: current player (only increment on valid move)
-- Return: status: not_started, active, complete
 - Return: shortest paths (UI feature to highlight)
 - Return: move list
 - New Method: get_valid_moves(player)
   - Any valid move in search with depth == num_players
-- Bug: Computer can't hop player
-- Bug: Valid wall method can't hop player
 
 Flask Application:
 - Identity management via cookie
