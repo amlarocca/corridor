@@ -145,37 +145,40 @@ function placeWall(board,orientation, x,y)
     });
 }
 function boardClicked(event) {
-    if (current_board.current_player != 
-    var elem = document.getElementById('corridor')
-    var elemLeft = elem.offsetLeft
-    var elemTop = elem.offsetTop
-    var x = event.pageX - elemLeft
-    var y = event.pageY - elemTop
+    if (current_board.current_player != player_number) {
+        alert('Not your turn fool!');
+    } else {
+        
+        var elem = document.getElementById('corridor')
+        var elemLeft = elem.offsetLeft
+        var elemTop = elem.offsetTop
+        var x = event.pageX - elemLeft
+        var y = event.pageY - elemTop
     
-    // cells are 30 and walls are 10 and come together,
-    // divide by the combined width then determine which wall
-    click_x = Math.floor(x / (cell_width + wall_width))
-    wall_x = false
-    if (x % (cell_width + wall_width) > cell_width) {
-        wall_x = true
-    }
-    click_y = Math.floor(y / (cell_width + wall_width))
-    wall_y = false
-    if (y % (cell_width + wall_width) > cell_width) {
-        wall_y = true
-    }
-    if (!wall_x & !wall_y) {
-        //alert('move piece: (' + click_x + ',' + click_y + ')')
-        makeMove(current_board,click_x,click_y)
-    } else if (wall_x & wall_y) {
-        //alert('place wall: (' + click_x + ',' + click_y + ')')
-        if (wall_type == "H") {
-            placeWall(current_board,"h",click_x,click_y)
-        } else if (wall_type == "V"){        
-            placeWall(current_board,"v",click_x,click_y)
+        // cells are 30 and walls are 10 and come together,
+        // divide by the combined width then determine which wall
+        click_x = Math.floor(x / (cell_width + wall_width))
+        wall_x = false
+        if (x % (cell_width + wall_width) > cell_width) {
+            wall_x = true
+        }
+        click_y = Math.floor(y / (cell_width + wall_width))
+        wall_y = false
+        if (y % (cell_width + wall_width) > cell_width) {
+            wall_y = true
+        }
+        if (!wall_x & !wall_y) {
+            //alert('move piece: (' + click_x + ',' + click_y + ')')
+            makeMove(current_board,click_x,click_y)
+        } else if (wall_x & wall_y) {
+            //alert('place wall: (' + click_x + ',' + click_y + ')')
+            if (wall_type == "H") {
+                placeWall(current_board,"h",click_x,click_y)
+            } else if (wall_type == "V"){        
+                placeWall(current_board,"v",click_x,click_y)
+            }
         }
     }
-
 }
 
 function renderBoard(board)
