@@ -1,6 +1,8 @@
 import flask
 import json
 import sys
+import redis
+import pickle
 from flask import Flask,render_template, request, jsonify, abort
 from Corridor import Board,Player
 from CorridorBot import CorridorBot
@@ -11,8 +13,10 @@ app.debug = True
 def hello():
     return "Hello World!"
 
-def build_response(board):
+def build_response(game_id,board):
+    write_board_to_redis(game_id,board)
     response = {}
+    response['game_id'] = game_id
     response['players'] = [{'position':player.position,'walls':player.walls,'goal':player.goal} for player in board.players]
     response['walls_v'] = list(board.walls['v'])
     response['walls_h'] = list(board.walls['h'])
@@ -31,8 +35,8 @@ def get_board():
 
 def build_board(board=None):
     if not board:
-        b = Board(9,[Player((4,0),8,('h',8)),
-                     Player((4,8),8,('h',0))])
+        b = Board(9,[Player((4,8),8,('h',0)),
+                     Player((4,0),8,('h',8))])
     else:
         b = Board(9,[Player(p['position'],p['walls'],p['goal']) for p in board['players']])
         b.walls['v'] = set([tuple(wall) for wall in board['walls_v']])
@@ -41,17 +45,23 @@ def build_board(board=None):
         b.status = board['status']
     return b
 
-if __name__ == "__main__":
-    app.run()
-
+def write_board_to_redis(board,game_id):
+    return pickle.dumps(r.set(game_id,board))
+    
+def get_board_from_redis(game_id):
+    return pickle.loads(r.get(game_id))
 
 @app.route('/make_move', methods=['POST'])
 def make_move():
     x = request.json['x']
     y = request.json['y']
     player = request.json['player']
-    b = build_board(request.json['board'])
     try:
+        board_key = request.json['game_id']
+        if board_key:
+            b = get_board_from_redis(board_key)
+        else:
+            b = build_board(request.json['board'])
         b.move_player(player,x,y,trace=True)
         b.status = "active"
     except:
@@ -65,6 +75,11 @@ def place_wall():
     player = request.json['player']
     orientation = request.json['orientation']
     try:
+        board_key = request.json['game_id']
+        if board_key:
+            b = get_board_from_redis(board_key)
+        else:
+            b = build_board(request.json['board'])
         b = build_board(request.json['board'])
         b.add_wall(orientation,x,y,player)
         b.status = "active"
@@ -78,8 +93,12 @@ def bot_move():
     player = request.json['player']
     opponent = request.json['opponent']
     move_num = request.json['move_num']
-    b = build_board(request.json['board'])
     try:
+        board_key = request.json['game_id']
+        if board_key:
+            b = get_board_from_redis(board_key)
+        else:
+            b = build_board(request.json['board'])
         bot = CorridorBot()
         bot.make_move(b,player,opponent,move_num,trace=False)
         b.status = "active"
@@ -93,5 +112,6 @@ def custom400(error):
     return response,400
 
 if __name__ == "__main__":
+    r = redis.StrictRedis(host='127.0.0.1', port=6379)
     app.run()
 
