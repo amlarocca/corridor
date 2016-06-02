@@ -78,6 +78,8 @@ function initializeBoard(board)
             //alert("Your query count: " + data.players);
             renderBoard(data)
             current_board = data
+            if (current_board.current_player != player_number)
+                botMove()
         }
     });
 }
