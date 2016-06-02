@@ -6,17 +6,17 @@ class Board():
         self.walls = {'h':set(),'v':set()}
         self.current_player = 0
 
-    def prev_player():
+    def prev_player(self):
         self.current_player = (self.current_player - 1) % len(self.players)
         
-    def next_player():
+    def next_player(self):
         self.current_player = (self.current_player + 1) % len(self.players)
     
     def move_player(self,player,x,y,trace=False):
         # This thing will throw an exception if we can't move player
         if self.can_move_player(player,x,y,trace=trace):
             self.players[player].position = (x,y)      
-            next_player()
+            self.next_player()
             
     def add_wall(self,orientation,x,y,player):
         # Rules:
@@ -46,14 +46,14 @@ class Board():
                 self.players[player].walls += 1
                 raise ValueError('cannot prevent any player from reaching their goal')
 
-        next_player()
+        self.next_player()
         
     def remove_wall(self,orientation,x,y,player):        
         # try to remove wall
         print 'trying to remove wall',x,y
         self.walls[orientation].remove((x,y))
         self.players[player].walls += 1        
-        prev_player()
+        self.prev_player()
         
     # A recursive method that will go until goal is reached, then return True
     # if not goal, it will traverse all not-yet-visited paths
