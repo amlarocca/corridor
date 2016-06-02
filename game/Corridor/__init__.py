@@ -160,7 +160,7 @@ class Board():
             for node in path:
                 if trace:
                     print node,start,end,[p.position for p in self.players]
-                if node != start and node != end and node not in [p.position for p in self.players]:
+                if node != start and node != end and tuple(node) not in [tuple(p.position) for p in self.players]:
                     valid_path = False
             if valid_path:
                 break
