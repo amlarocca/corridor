@@ -19,9 +19,8 @@ def build_response(board):
     response['current_player'] = board.current_player
     response['winner'] = ''
     for player in range(len(board.players)):
-      if board.check_player_goal_status(player):
-    response['winner'] = player
-    print response['players']
+        if board.check_player_goal_status(player):
+            response['winner'] = player
     return flask.jsonify(response)
 
 @app.route('/get_board', methods=['GET'])
