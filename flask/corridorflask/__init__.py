@@ -35,6 +35,7 @@ def build_board(board=None):
         b = Board(9,[Player(p['position'],p['walls'],p['goal']) for p in board['players']])
         b.walls['v'] = set([tuple(wall) for wall in board['walls_v']])
         b.walls['h'] = set([tuple(wall) for wall in board['walls_h']])
+        b.current_player = board['current_player']
     return b
 
 if __name__ == "__main__":
