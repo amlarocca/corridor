@@ -57,9 +57,13 @@ function setupBoard()
 {
     // get game_id from url, if available
     // get player_number from url, if available
+
+    url = "http://tools.zensky.com/corridor/get_board"
     game_id = getParameterByName('game_id')
-    data.game_id = game_id
-    getJSON("http://tools.zensky.com/corridor/get_board",
+    if (game_id) {
+        url += "?game_id=" + game_id
+    }
+    getJSON(url,
     function(err, data) {
           if (err != null) {
             alert("Something went wrong: " + err);
