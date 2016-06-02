@@ -4,13 +4,20 @@ class Board():
         self.size = size
         self.players = players
         self.walls = {'h':set(),'v':set()}
-    
-    def remove_wall(self,orientation,x,y,player):        
-        # try to remove wall
-	print 'trying to remove wall',x,y
-        self.walls[orientation].remove((x,y))
-        self.players[player].walls += 1
+        self.current_player = 0
+
+    def prev_player():
+        self.current_player = (self.current_player - 1) % len(self.players)
         
+    def next_player():
+        self.current_player = (self.current_player + 1) % len(self.players)
+    
+    def move_player(self,player,x,y,trace=False):
+        # This thing will throw an exception if we can't move player
+        if self.can_move_player(player,x,y,trace=trace):
+            self.players[player].position = (x,y)      
+            next_player()
+            
     def add_wall(self,orientation,x,y,player):
         # Rules:
         # 1. Wall must be in play area (index bounds)
@@ -39,7 +46,14 @@ class Board():
                 self.players[player].walls += 1
                 raise ValueError('cannot prevent any player from reaching their goal')
 
+        next_player()
         
+    def remove_wall(self,orientation,x,y,player):        
+        # try to remove wall
+        print 'trying to remove wall',x,y
+        self.walls[orientation].remove((x,y))
+        self.players[player].walls += 1        
+        prev_player()
         
     # A recursive method that will go until goal is reached, then return True
     # if not goal, it will traverse all not-yet-visited paths
@@ -59,7 +73,7 @@ class Board():
             else:
                 for (x,y) in [(node[0],node[1]-1),(node[0]+1,node[1]),(node[0]-1,node[1]),(node[0],node[1]+1)]:
                     try:
-                        self.can_move(node,x,y)
+                        self.can_move(node,x,y,allow_overlap=True)
                         if self.can_reach_goal((x,y),visited,player):
                             goal_reached = True
                             break
@@ -109,8 +123,8 @@ class Board():
                 if step == -1:
                     wall_intersection -= 1
                 if (x,wall_intersection) in self.walls['h'] or (x-1,wall_intersection) in self.walls['h']:
-		    if trace:
-			print x,wall_intersection,self.walls['h']
+                    if trace:
+                        print x,wall_intersection,self.walls['h']
                     raise ValueError('blocked by horizontal wall')
         # else if this is a purely vertical move:
         elif current[1] == y:
@@ -212,11 +226,6 @@ class Board():
                         except:
                             if trace:
                                 print sys.exc_info()
-
-    def move_player(self,player,x,y,trace=False):
-        # This thing will throw an exception if we can't move player
-        if self.can_move_player(player,x,y,trace=trace):
-            self.players[player].position = (x,y)
             
     def check_player_goal_status(self,player):
         return self.check_goal_status(self.players[player].position,self.players[player].goal)

@@ -6,6 +6,7 @@ from Corridor import Board,Player
 from CorridorBot import CorridorBot
 app = Flask(__name__)
 app.debug = True
+
 @app.route("/")
 def hello():
     return "Hello World!"
@@ -15,10 +16,11 @@ def build_response(board):
     response['players'] = [{'position':player.position,'walls':player.walls,'goal':player.goal} for player in board.players]
     response['walls_v'] = list(board.walls['v'])
     response['walls_h'] = list(board.walls['h'])
+    response['current_player'] = board.current_player
     response['winner'] = ''
     for player in range(len(board.players)):
       if board.check_player_goal_status(player):
-	response['winner'] = player
+    response['winner'] = player
     print response['players']
     return flask.jsonify(response)
 
@@ -49,7 +51,7 @@ def make_move():
     try:
         b.move_player(player,x,y,trace=True)
     except:
-	abort(400,str(sys.exc_info()[1]))
+    abort(400,str(sys.exc_info()[1]))
     return build_response(b)
 
 @app.route('/place_wall', methods=['POST'])
@@ -73,10 +75,10 @@ def bot_move():
     move_num = request.json['move_num']
     b = build_board(request.json['board'])
     try:
-	bot = CorridorBot()
-	bot.make_move(b,player,opponent,move_num,trace=False)
+    bot = CorridorBot()
+    bot.make_move(b,player,opponent,move_num,trace=False)
     except:
-	abort(400,str(sys.exc_info()[1]))
+    abort(400,str(sys.exc_info()[1]))
     return build_response(b)
 
 @app.errorhandler(400)
