@@ -69,6 +69,9 @@ function setupBoard()
             alert("Something went wrong: " + err);
           } else {
             //alert("Your query count: " + data.players);
+            if (!game_id) {
+                window.location += "?game_id=" + game_id;
+            }
             renderBoard(data)
             current_board = data
             if (current_board.current_player != player_number)
