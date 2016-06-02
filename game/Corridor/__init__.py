@@ -14,7 +14,7 @@ class Board():
         self.current_player = (self.current_player + 1) % len(self.players)
     
     def move_player(self,player,x,y,trace=False):
-        if self.status = "completed":
+        if self.status == "completed":
             raise ValueError("Game already completed")
         # This thing will throw an exception if we can't move player
         if self.can_move_player(player,x,y,trace=trace):
@@ -22,7 +22,7 @@ class Board():
             self.next_player()
             
     def add_wall(self,orientation,x,y,player):
-        if self.status = "completed":
+        if self.status == "completed":
             raise ValueError("Game already completed")
         # Rules:
         # 1. Wall must be in play area (index bounds)
