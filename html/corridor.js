@@ -9,6 +9,7 @@ var wall_width = 11
 var current_board = {}
 var move_num = 1
 var wall_type = "H"
+var player_number = 1
 
 window.onload = initializeBoard;
 
@@ -85,8 +86,8 @@ function botMove()
 {
     data = {}
     data.board = current_board
-    data.player = 1
-    data.opponent = 0
+    data.player = (player_number + 1) % 2
+    data.opponent = player_number
     data.move_num = move_num
     postJSON("http://tools.zensky.com/corridor/bot_move",data,
       function(err, data2) {
@@ -107,7 +108,7 @@ function makeMove(board,x,y)
     data.board = board
     data.x = x
     data.y = y
-    data.player = 0
+    data.player = player_number
     postJSON("http://tools.zensky.com/corridor/make_move",data,
       function(err, data2) {
           if (err != null) {
@@ -128,7 +129,7 @@ function placeWall(board,orientation, x,y)
     data.board = board
     data.x = x
     data.y = y
-    data.player = 0
+    data.player = player_number
     data.orientation = orientation
     postJSON("http://tools.zensky.com/corridor/place_wall",data,
       function(err, data2) {
@@ -144,6 +145,7 @@ function placeWall(board,orientation, x,y)
     });
 }
 function boardClicked(event) {
+    if (current_board.current_player != 
     var elem = document.getElementById('corridor')
     var elemLeft = elem.offsetLeft
     var elemTop = elem.offsetTop
@@ -242,7 +244,7 @@ function renderBoard(board)
     }
     document.getElementById("p1_walls").textContent=board.players[0].walls;
     document.getElementById("p2_walls").textContent=board.players[1].walls;
-    
+    document.getElementById("current_player").textContent=board.current_player;
     renderWallSelector();
     if (board.winner) {
         alert("Player " + (board.winner + 1) + " Wins!")
