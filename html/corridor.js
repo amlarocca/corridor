@@ -11,15 +11,35 @@ var move_num = 1
 var wall_type = "H"
 var player_number = 1
 var botDelay = 500
+var play_computer = false
 
 window.onload = initializeBoard;
+
+function playComputer(checkbox)
+{
+    play_computer = checkbox.checked
+    botMove()
+}
+
+function updateQueryStringParameter(uri, key, value) {
+  var re = new RegExp("([?&])" + key + "=.*?(&|$)", "i");
+  var separator = uri.indexOf('?') !== -1 ? "&" : "?";
+  var new_uri;
+  if (uri.match(re)) {
+    new_uri = uri.replace(re, '$1' + key + "=" + value + '$2');
+  }
+  else {
+    new_uri = uri + separator + key + "=" + value;
+  }
+  return new_uri
+}
 
 function getParameterByName(name) {
     var url = window.location.href;
     name = name.replace(/[\[\]]/g, "\\$&");
     var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
         results = regex.exec(url);
-    if (!results) return null;
+    if (!results) return '';
     if (!results[2]) return '';
     return decodeURIComponent(results[2].replace(/\+/g, " "));
 }
@@ -40,28 +60,32 @@ function initializeBoard()
     
     var startOver = document.getElementById('startOver');
     startOver.style.cursor = 'pointer';
-    startOver.onclick = setupBoard;
+    startOver.onclick = function() {setupBoard(true);};
     
     var switchSides = document.getElementById('switchSides');
     switchSides.style.cursor = 'pointer';
     switchSides.onclick = function() {
         player_number = (player_number + 1) % 2
-        setupBoard();
+        var new_uri = updateQueryStringParameter(window.location.href,'player_number',player_number);
+        window.location.href = new_uri;
     };
     
-    setupBoard();
+    setupBoard(false);
 }
 
 
-function setupBoard()
+function setupBoard(reset)
 {
     // get game_id from url, if available
     // get player_number from url, if available
-
     url = "http://tools.zensky.com/corridor/get_board"
     game_id = getParameterByName('game_id')
-    if (game_id) {
-        url += "?game_id=" + game_id
+    if (!reset & game_id != '') {
+        url = updateQueryStringParameter(url,"game_id",game_id)
+    }
+    player_number_url = getParameterByName('player_number')
+    if (player_number_url != '') {
+        player_number = parseInt(player_number_url)
     }
     getJSON(url,
     function(err, data) {
@@ -69,13 +93,16 @@ function setupBoard()
             alert("Something went wrong: " + err);
           } else {
             //alert("Your query count: " + data.players);
-            if (!game_id) {
-                window.location += "?game_id=" + game_id;
+            if (!game_id || reset) {
+                console.log('updating query string')
+                var new_uri = updateQueryStringParameter(window.location.href,'game_id',data.game_id);
+                window.location.href = new_uri;
+            } else {
+                renderBoard(data)
+                current_board = data
+                if (current_board.current_player != player_number)
+                    botMove()
             }
-            renderBoard(data)
-            current_board = data
-            if (current_board.current_player != player_number)
-                botMove()
         }
     });
 }
@@ -129,25 +156,27 @@ var postJSON = function(url,body,callback) {
 
 function botMove()
 {
-    data = {}
-    //data.board = current_board
-    data.game_id = current_board.game_id
-    data.player = (player_number + 1) % 2
-    data.opponent = player_number
-    data.move_num = move_num
-    document.getElementById("current_player").textContent="Player " + (current_board.current_player + 1) + " Thinking...";
-    postJSON("http://tools.zensky.com/corridor/bot_move",data, function(err, data2) {
-        if (err != null) {
-            alert(data2);
-        } else {
-            setTimeout(function() { 
-                board = JSON.parse(data2)
-                renderBoard(board)
-                current_board = board
-                move_num += 1
-            }, botDelay); 
-        }
-    });
+    if (play_computer & board.current_player != player) {
+        data = {}
+        //data.board = current_board
+        data.game_id = current_board.game_id
+        data.player = (player_number + 1) % 2
+        data.opponent = player_number
+        data.move_num = move_num
+        document.getElementById("current_player").textContent="Player " + (current_board.current_player + 1) + " Thinking...";
+        postJSON("http://tools.zensky.com/corridor/bot_move",data, function(err, data2) {
+            if (err != null) {
+                alert(data2);
+            } else {
+                setTimeout(function() { 
+                    board = JSON.parse(data2)
+                    renderBoard(board)
+                    current_board = board
+                    move_num += 1
+                }, botDelay); 
+            }
+        });
+    }
 }
 
 function makeMove(board,x,y)

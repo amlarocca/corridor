@@ -25,6 +25,7 @@ def build_response(game_id,board):
     response['walls_h'] = list(board.walls['h'])
     response['current_player'] = board.current_player
     response['winner'] = ''
+    response['timestamp'] = board.timestamp
     for player in range(len(board.players)):
         if board.check_player_goal_status(player):
             response['winner'] = player
@@ -68,6 +69,8 @@ def get_game_id():
     return binascii.b2a_hex(os.urandom(15))
     
 def write_board_to_redis(game_id,board):
+    timestamp = time.time()
+    board.timestamp = timestamp
     return get_redis().set(game_id,pickle.dumps(board))
     
 def get_board_from_redis(game_id):

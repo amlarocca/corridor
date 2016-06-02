@@ -9,13 +9,13 @@
             width: 800px;
             margin-left: auto ;
             margin-right: auto ;
-            border: 1px solid black
+            border: 1px solid black;
+            font-family: arial;
         }
         #header {
             text-align: center;
             font-size: 50px;
             border-bottom: 1px solid gray;
-            font-family: arial;
         }
         #content {
             padding: 5px
@@ -48,6 +48,16 @@
             color: white;
             width: 100px;
         }
+        .player {
+            margin: 3px;
+            width: 90%;
+            border: 1px solid black;
+        }
+        .name {
+            color: white;
+            padding: 3px;
+            background-color: black;
+        }
 		</style>
 	</head>
 	
@@ -61,12 +71,22 @@
           Wall Type:
           <canvas id="walltype">
           </canvas>
-        </div>  
+        </div>
+        <div id="wallselector">
+          Play Computer:
+          <input type="checkbox" name="computer" value="computer" onclick="playComputer(this)">
+        </div>    
         <br/>
         <br/>
         <div>Status: <span id="current_player"></span></div>
-        <div>Player 1 Walls Remaining:<span id="p1_walls"></span></div>
-        <div>Player 2 Walls Remaining:<span id="p2_walls"></span></div>
+        <div class="player">
+            <div class="name">Player 1</div>
+            <div class="details">Walls Remaining:<span id="p1_walls"></span></div>
+        </div>
+        <div class="player">
+            <div class="name">Player 2</div>
+            <div class="details">Walls Remaining:<span id="p2_walls"></span></div>
+        </div>
         <div class="gameButton" id="startOver">Start Over</div>
         <div class="gameButton" id="switchSides">Switch Sides</div></div>
       <div id="gameboard">
