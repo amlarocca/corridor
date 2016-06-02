@@ -11,6 +11,7 @@ Game Libary:
 Flask Application:
 - Identity management via cookie
 - Persistence via Redis
+  - Append for move list
 - Assign unique key for new games
 
 Web Application (HTML/CSS):
