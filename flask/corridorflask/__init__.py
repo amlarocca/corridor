@@ -59,12 +59,13 @@ def get_game_id():
     return binascii.b2a_hex(os.urandom(15))
     
 def write_board_to_redis(game_id,board):
-    return pickle.dumps(get_redis().set(game_id,board))
+    return get_redis().set(game_id,pickle.dumps(board))
     
 def get_board_from_redis(game_id):
     print 'Getting game from redis with key',game_id
-    board = pickle.loads(str(get_redis().get(game_id)))
-    print board
+    pickled_board = str(get_redis().get(game_id))
+    #print pickled_board
+    board = pickle.loads(pickled_board)
     return board
 
 @app.route('/make_move', methods=['POST'])
