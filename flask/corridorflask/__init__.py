@@ -63,7 +63,7 @@ def write_board_to_redis(game_id,board):
     
 def get_board_from_redis(game_id):
     print 'Getting game from redis with key',game_id
-    board = pickle.loads(get_redis().get(game_id))
+    board = pickle.loads(str(get_redis().get(game_id)))
     print board
     return board
 
