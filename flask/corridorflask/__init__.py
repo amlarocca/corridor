@@ -50,7 +50,7 @@ def make_move():
     try:
         b.move_player(player,x,y,trace=True)
     except:
-    abort(400,str(sys.exc_info()[1]))
+        abort(400,str(sys.exc_info()[1]))
     return build_response(b)
 
 @app.route('/place_wall', methods=['POST'])
@@ -74,10 +74,10 @@ def bot_move():
     move_num = request.json['move_num']
     b = build_board(request.json['board'])
     try:
-    bot = CorridorBot()
-    bot.make_move(b,player,opponent,move_num,trace=False)
+        bot = CorridorBot()
+        bot.make_move(b,player,opponent,move_num,trace=False)
     except:
-    abort(400,str(sys.exc_info()[1]))
+        abort(400,str(sys.exc_info()[1]))
     return build_response(b)
 
 @app.errorhandler(400)
