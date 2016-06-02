@@ -58,7 +58,7 @@ def get_redis():
 def get_game_id():
     return binascii.b2a_hex(os.urandom(15))
     
-def write_board_to_redis(board,game_id):
+def write_board_to_redis(game_id,board):
     return pickle.dumps(get_redis().set(game_id,board))
     
 def get_board_from_redis(game_id):
