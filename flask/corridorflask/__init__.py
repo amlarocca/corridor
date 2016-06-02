@@ -84,7 +84,7 @@ def make_move():
         b.status = "active"
     except:
         abort(400,str(sys.exc_info()))
-    return build_response(get_game_id,b)
+    return build_response(game_id,b)
 
 @app.route('/place_wall', methods=['POST'])
 def place_wall():
