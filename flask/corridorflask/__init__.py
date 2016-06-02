@@ -50,6 +50,7 @@ def build_board(board=None):
 
 def connect_to_redis():
     r = redis.StrictRedis(host='127.0.0.1', port=6379)
+    print 'Connected to redis:',r.client_list()
     
 def get_game_id():
     return binascii.b2a_hex(os.urandom(15))
