@@ -3,6 +3,7 @@ import json
 import sys
 import redis
 import pickle
+import os,binascii
 from flask import Flask,render_template, request, jsonify, abort
 from Corridor import Board,Player
 from CorridorBot import CorridorBot
@@ -31,7 +32,7 @@ def build_response(game_id,board):
 
 @app.route('/get_board', methods=['GET'])
 def get_board():
-    return build_response(build_board())
+    return build_response(get_game_id(),build_board())
 
 def build_board(board=None):
     if not board:
@@ -45,6 +46,9 @@ def build_board(board=None):
         b.status = board['status']
     return b
 
+def get_game_id():
+    return binascii.b2a_hex(os.urandom(15))
+    
 def write_board_to_redis(board,game_id):
     return pickle.dumps(r.set(game_id,board))
     
@@ -56,17 +60,18 @@ def make_move():
     x = request.json['x']
     y = request.json['y']
     player = request.json['player']
-    try:
-        board_key = request.json['game_id']
-        if board_key:
-            b = get_board_from_redis(board_key)
+    game_id = request.json['game_id']
+    try:        
+        if game_id:
+            b = get_board_from_redis(game_id)
         else:
+            game_id = get_game_id()
             b = build_board(request.json['board'])
         b.move_player(player,x,y,trace=True)
         b.status = "active"
     except:
         abort(400,str(sys.exc_info()[1]))
-    return build_response(b)
+    return build_response(get_game_id,b)
 
 @app.route('/place_wall', methods=['POST'])
 def place_wall():
@@ -74,11 +79,12 @@ def place_wall():
     y = request.json['y']
     player = request.json['player']
     orientation = request.json['orientation']
-    try:
-        board_key = request.json['game_id']
-        if board_key:
-            b = get_board_from_redis(board_key)
+    game_id = request.json['game_id']
+    try:        
+        if game_id:
+            b = get_board_from_redis(game_id)
         else:
+            game_id = get_game_id()
             b = build_board(request.json['board'])
         b = build_board(request.json['board'])
         b.add_wall(orientation,x,y,player)
@@ -86,25 +92,26 @@ def place_wall():
     except:
         abort(400,str(sys.exc_info()[1]))
 
-    return build_response(b)
+    return build_response(game_id,b)
 
 @app.route('/bot_move', methods=['POST'])
 def bot_move():
     player = request.json['player']
     opponent = request.json['opponent']
     move_num = request.json['move_num']
-    try:
-        board_key = request.json['game_id']
-        if board_key:
-            b = get_board_from_redis(board_key)
+    game_id = request.json['game_id']
+    try:        
+        if game_id:
+            b = get_board_from_redis(game_id)
         else:
+            game_id = get_game_id()
             b = build_board(request.json['board'])
         bot = CorridorBot()
         bot.make_move(b,player,opponent,move_num,trace=False)
         b.status = "active"
     except:
         abort(400,str(sys.exc_info()[1]))
-    return build_response(b)
+    return build_response(game_id,b)
 
 @app.errorhandler(400)
 def custom400(error):
