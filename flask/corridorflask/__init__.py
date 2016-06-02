@@ -40,7 +40,7 @@ def get_board():
             b = get_board_from_redis(game_id)
         else:
             game_id = get_game_id()
-            b = build_board(request.json['board'])
+            b = build_board()
     except:
         abort(400,str(sys.exc_info())) 
     return build_response(game_id,b)
