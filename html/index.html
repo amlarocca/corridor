@@ -5,41 +5,49 @@
 		<script src="corridor.js"></script>
 		
 		<style>
-      body {
-        width: 800px;
-        margin-left: auto ;
-        margin-right: auto ;
-        border: 1px solid black
-      }
-      #header {
-        text-align: center;
-        font-size: 50px;
-        border-bottom: 1px solid gray;
-        font-family: arial;
-        
-      }
-      #content {
-        padding: 5px
-      }
-      #gameDetails {
-        width: 195px;
-        float: left;
-      }
-      #gameboard {
-        padding: 0;
-        width:385px;
-        display: inline-block;
-        border: 2px solid gray;
-			}
-			#walltype {
-				width: 80px;
-        height: 80px;
-        border: 1px solid black;
-			}
-      #moveList {
-        float: right; 
-        width: 195px;
-      }
+        body {
+            width: 800px;
+            margin-left: auto ;
+            margin-right: auto ;
+            border: 1px solid black
+        }
+        #header {
+            text-align: center;
+            font-size: 50px;
+            border-bottom: 1px solid gray;
+            font-family: arial;
+        }
+        #content {
+            padding: 5px
+        }
+        #gameDetails {
+            width: 195px;
+            float: left;
+        }
+        #gameboard {
+            padding: 0;
+            width:385px;
+            display: inline-block;
+            border: 2px solid gray;
+        }
+        #walltype {
+            width: 80px;
+            height: 80px;
+            border: 1px solid black;
+        }
+        #moveList {
+            float: right; 
+            width: 195px;
+        }
+        .gameButton {
+            border: 1px solid black;
+            background: #999;
+            text-align: center;
+            font-family: arial;
+            padding: 3px;
+            color: white;
+            width: 100px;
+        }
 		</style>
 	</head>
 	
@@ -56,10 +64,11 @@
         </div>  
         <br/>
         <br/>
-        <div>Player <span id="current_player"></span>'s Turn</div>
+        <div>Status: <span id="current_player"></span></div>
         <div>Player 1 Walls Remaining:<span id="p1_walls"></span></div>
         <div>Player 2 Walls Remaining:<span id="p2_walls"></span></div>
-      </div>
+        <div class="gameButton" id="startOver">Start Over</div>
+        <div class="gameButton" id="switchSides">Switch Sides</div></div>
       <div id="gameboard">
         <canvas id="corridor">
         </canvas>	      

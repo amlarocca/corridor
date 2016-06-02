@@ -10,10 +10,55 @@ var current_board = {}
 var move_num = 1
 var wall_type = "H"
 var player_number = 1
+var botDelay = 500
 
 window.onload = initializeBoard;
 
 
+function initializeBoard()
+{
+    var wallselector = document.getElementById('wallselector');
+
+    wallselector.style.cursor = 'pointer';
+    wallselector.onclick = function() {
+        if (wall_type == "H") {
+          wall_type = "V";
+        } else if (wall_type == "V") {
+          wall_type = "H"
+        }
+        renderWallSelector();
+    };
+    
+    var startOver = document.getElementById('startOver');
+    startOver.style.cursor = 'pointer';
+    startOver.onclick = setupBoard;
+    
+    var switchSides = document.getElementById('switchSides');
+    switchSides.style.cursor = 'pointer';
+    switchSides.onclick = function() {
+        player_number = (player_number + 1) % 2
+        setupBoard();
+    };
+    
+    setupBoard();
+}
+
+
+function setupBoard()
+{
+    getJSON("http://tools.zensky.com/corridor/get_board",
+    function(err, data) {
+          if (err != null) {
+            alert("Something went wrong: " + err);
+          } else {
+            //alert("Your query count: " + data.players);
+            renderBoard(data)
+            current_board = data
+            if (current_board.current_player != player_number)
+                botMove()
+        }
+    });
+}
 function renderWallSelector() {
     var walltype = document.getElementById("walltype");
     walltype.setAttribute('width', 2*cell_width);
@@ -25,6 +70,10 @@ function renderWallSelector() {
       wallContext.fillRect(0, center, 2* cell_width,wall_width);
     } else if (wall_type == "V") {      
       wallContext.fillRect(center, 0, wall_width, 2*cell_width);
+    }
+    wallContext.font = "30px Arial";
+    if (current_board.players) {
+        wallContext.fillText(current_board.players[player_number].walls,2*cell_width-18,2*cell_width-2);
     }
   
 };
@@ -57,32 +106,6 @@ var postJSON = function(url,body,callback) {
     };
     xhr.send(JSON.stringify(body));
 };
-function initializeBoard(board)
-{
-    var wallselector = document.getElementById('wallselector');
-
-    wallselector.style.cursor = 'pointer';
-    wallselector.onclick = function() {
-        if (wall_type == "H") {
-          wall_type = "V";
-        } else if (wall_type == "V") {
-          wall_type = "H"
-        }
-        renderWallSelector();
-    };
-    getJSON("http://tools.zensky.com/corridor/get_board",
-    function(err, data) {
-          if (err != null) {
-            alert("Something went wrong: " + err);
-          } else {
-            //alert("Your query count: " + data.players);
-            renderBoard(data)
-            current_board = data
-            if (current_board.current_player != player_number)
-                botMove()
-        }
-    });
-}
 
 function botMove()
 {
@@ -91,15 +114,17 @@ function botMove()
     data.player = (player_number + 1) % 2
     data.opponent = player_number
     data.move_num = move_num
-    postJSON("http://tools.zensky.com/corridor/bot_move",data,
-      function(err, data2) {
-          if (err != null) {
-               alert(data2);
-          } else {
-              board = JSON.parse(data2)
-              renderBoard(board)
-              current_board = board
-              move_num += 1
+    document.getElementById("current_player").textContent="Player " + (current_board.current_player + 1) + " Thinking...";
+    postJSON("http://tools.zensky.com/corridor/bot_move",data, function(err, data2) {
+        if (err != null) {
+            alert(data2);
+        } else {
+            setTimeout(function() { 
+                board = JSON.parse(data2)
+                renderBoard(board)
+                current_board = board
+                move_num += 1
+            }, botDelay); 
         }
     });
 }
@@ -239,6 +264,15 @@ function renderBoard(board)
                     context2D.lineWidth = 1;
                     context2D.strokeStyle = '#003300';
                     context2D.stroke();
+                    
+                    if (board.current_player == player) {
+                        context2D.beginPath();
+                        context2D.arc(col_offset + (width/2), row_offset + (height/2), (width/2)-4, 0, 2 * Math.PI, false);
+                        context2D.lineWidth = 3;
+                        context2D.strokeStyle = 'yellow';
+                        context2D.stroke();                    
+                    }
+                    
                 }
             }
       
@@ -249,7 +283,7 @@ function renderBoard(board)
     }
     document.getElementById("p1_walls").textContent=board.players[0].walls;
     document.getElementById("p2_walls").textContent=board.players[1].walls;
-    document.getElementById("current_player").textContent=board.current_player;
+    document.getElementById("current_player").textContent="Player " + (board.current_player + 1) + "'s Turn";
     renderWallSelector();
     if (board.winner) {
         alert("Player " + (board.winner + 1) + " Wins!")
