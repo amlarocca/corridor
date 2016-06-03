@@ -154,9 +154,55 @@ var postJSON = function(url,body,callback) {
     xhr.send(JSON.stringify(body));
 };
 
+function poll(fn, callback, errback, timeout, interval) {
+    var endTime = Number(new Date()) + (timeout || 300000);
+    interval = interval || 5000;
+
+    (function p() {
+            // If the condition is met, we're done! 
+            if(fn()) {
+                callback();
+            }
+            // If the condition isn't met but the timeout hasn't elapsed, go again
+            else if (Number(new Date()) < endTime) {
+                setTimeout(p, interval);
+            }
+            // Didn't match and too much time, reject!
+            else {
+                errback(new Error('timed out for ' + fn + ': ' + arguments));
+            }
+    })();
+}
+
+// Usage:  ensure element is visible
+function wait_for_opponent_move() {
+    poll(
+        function() {
+            board_changed = false;
+            url = "http://tools.zensky.com/corridor/get_board"
+            game_id = getParameterByName('game_id')
+            getJSON(url,
+                function(err, data) {
+                if (err != null) {
+                    alert("Something went wrong: " + err);
+                } else if (data.timestamp != current_board.timestamp) {
+                    setupBoard();
+                    board_changed = true;
+                }}
+            );
+            return board_changed;
+        },
+        function() {
+        },
+        function() {
+            // Error, failure callback
+        }
+    );
+}
+
 function botMove()
 {
-    if (play_computer & board.current_player != player) {
+    if (play_computer & current_board.current_player != player_number) {
         data = {}
         //data.board = current_board
         data.game_id = current_board.game_id
@@ -196,6 +242,7 @@ function makeMove(board,x,y)
               renderBoard(board)
               current_board = board
               move_num += 1
+              wait_for_opponent_move()
               botMove()
         }
     });
