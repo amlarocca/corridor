@@ -21,7 +21,7 @@ Web Application (HTML/CSS):
 - Ability to change name
 - Highlight active player name and game piece
 - Ghost for valid moves
-- Display moves list
+- Display moves list (low)
 - Matchmaking
   - Share via url with key
   - public vs. private
@@ -30,7 +30,6 @@ Web Application (HTML/CSS):
   - If no parter yet, player can switch sides
   - If no parter yet, player can start with computer
   - Additional players in observer mode
-- Mechanism for polling or notifications to client
 
 Overall:
 - Python version upgrade from 2.6
