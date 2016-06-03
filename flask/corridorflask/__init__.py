@@ -3,6 +3,7 @@ import json
 import sys
 import redis
 import pickle
+import time
 import os,binascii
 from flask import Flask,render_template, request, jsonify, abort
 from Corridor import Board,Player
