@@ -1,4 +1,10 @@
 # corridor
+# Customer Feedback
+- Which one is me
+- Why do I have to move to start polling?
+- Why keep polling when it is my move?
+- why poll when I'm playing the computer
+- 
 
 # TODO
 
