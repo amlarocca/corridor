@@ -100,8 +100,8 @@ function setupBoard(reset)
             } else {
                 current_board = data
                 renderBoard()
-                //if (current_board.current_player != player_number)
-                //    botMove()
+                if (current_board.current_player != player_number)
+                    botMove()
             }
         }
     });
@@ -188,6 +188,7 @@ function wait_for_opponent_move() {
                 if (!board_changed) {
                     url = "http://tools.zensky.com/corridor/get_board"
                     game_id = getParameterByName('game_id')
+                    url = updateQueryStringParameter(url,"game_id",game_id)
                     getJSON(url,
                         function(err, data) {
                         if (err != null) {
@@ -195,8 +196,8 @@ function wait_for_opponent_move() {
                         } else if (data.timestamp != current_board.timestamp) {
                             console.log('the board changed!' + data.timestamp + ' different from ' + current_board.timestamp)
                             current_board = data;
-                            setupBoard();
                             board_changed = true;
+                            renderBoard();
                         }}
                     );
                 }
