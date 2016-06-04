@@ -191,8 +191,9 @@ function wait_for_opponent_move() {
                     if (err != null) {
                         updateStatus("Something went wrong: " + err);
                     } else if (data.timestamp != current_board.timestamp) {
-                        setupBoard();
                         console.log('the board changed!' + data.timestamp + ' different from ' + current_board.timestamp)
+                        current_board = data;
+                        setupBoard();
                         board_changed = true;
                     }}
                 );
