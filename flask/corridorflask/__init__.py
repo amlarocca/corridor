@@ -21,7 +21,7 @@ def build_response(game_id,board,write=True):
     if not hasattr(board, 'timestamp'):
         print('board has no timestamp')
         write_board_to_redis(game_id,board)
-    else if write:        
+    elif write:        
         write_board_to_redis(game_id,board)
     response = {}
     response['game_id'] = game_id
