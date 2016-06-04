@@ -18,7 +18,7 @@ def hello():
     return "Hello World!"
 
 def build_response(game_id,board,write=True):
-    if not hasattr(board, 'timestamp'):
+    if not board.timestamp:
         print('board has no timestamp')
         write_board_to_redis(game_id,board)
     elif write:        

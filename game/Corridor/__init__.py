@@ -6,6 +6,7 @@ class Board():
         self.walls = {'h':set(),'v':set()}
         self.current_player = 0
         self.status = "not_started"
+        self.timestamp = None
 
     def prev_player(self):
         self.current_player = (self.current_player - 1) % len(self.players)

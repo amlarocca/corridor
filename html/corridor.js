@@ -154,7 +154,6 @@ var postJSON = function(url,body,callback) {
     xhr.send(JSON.stringify(body));
 };
 
-board_changed = false;
 function poll(fn, callback, errback, timeout, interval) {
     var endTime = Number(new Date()) + (timeout || 300000);
     interval = interval || 5000;
@@ -178,25 +177,29 @@ function poll(fn, callback, errback, timeout, interval) {
 
 // Usage:  ensure element is visible
 already_polling = false;
+board_changed = false;
 function wait_for_opponent_move() {
     console.log('called wait_for_opponent_move, already polling:' + already_polling)
     if (!already_polling) {
         already_polling = true;
+        board_changed = false;
         poll(
             function() {
-                url = "http://tools.zensky.com/corridor/get_board"
-                game_id = getParameterByName('game_id')
-                getJSON(url,
-                    function(err, data) {
-                    if (err != null) {
-                        updateStatus("Something went wrong: " + err);
-                    } else if (data.timestamp != current_board.timestamp) {
-                        console.log('the board changed!' + data.timestamp + ' different from ' + current_board.timestamp)
-                        current_board = data;
-                        setupBoard();
-                        board_changed = true;
-                    }}
-                );
+                if (!board_changed) {
+                    url = "http://tools.zensky.com/corridor/get_board"
+                    game_id = getParameterByName('game_id')
+                    getJSON(url,
+                        function(err, data) {
+                        if (err != null) {
+                            updateStatus("Something went wrong: " + err);
+                        } else if (data.timestamp != current_board.timestamp) {
+                            console.log('the board changed!' + data.timestamp + ' different from ' + current_board.timestamp)
+                            current_board = data;
+                            setupBoard();
+                            board_changed = true;
+                        }}
+                    );
+                }
                 return board_changed;
             },
             function() {
@@ -204,7 +207,7 @@ function wait_for_opponent_move() {
                 already_polling = false;
             },
             function() {
-                console.log('error calback')
+                console.log('error callback')
                 already_polling = false;
                 // Error, failure callback
             }
@@ -329,6 +332,7 @@ function boardClicked(event) {
 
 function renderBoard()
 { 
+    console.log('Rendering board with timestamp: ', current_board.timestamp)
     var canvas = document.getElementById("corridor");
     var totalWidth = size * cell_width + (size -1) * wall_width
     canvas.setAttribute('width', totalWidth);
