@@ -6,7 +6,7 @@
 		
 		<style>
         body {
-            width: 800px;
+            width: 400px;
             margin-left: auto ;
             margin-right: auto ;
             border: 1px solid black;
@@ -21,19 +21,14 @@
             padding: 5px
         }
         #gameDetails {
-            width: 195px;
-            float: left;
+           /* width: 195px;
+            float: left;*/
         }
         #gameboard {
             padding: 0;
             width:385px;
             display: inline-block;
             border: 2px solid gray;
-        }
-        #walltype {
-            width: 80px;
-            height: 80px;
-            border: 1px solid black;
         }
         #moveList {
             float: right; 
@@ -47,6 +42,37 @@
             padding: 3px;
             color: white;
             width: 100px;
+            float: left;
+        }
+        .playComputer {
+            float: left;
+        }
+        .controlsLeft {
+            float: left;
+            width: 140px;
+        }
+        .controlsRight {
+            float: right;
+            width: 200px;
+        }
+        .currentPlayer {
+            float: left;
+            width: 100px;
+            text-align: center;
+        }
+        .playerNumberTitle {
+            font-size: 20px;
+        
+        }
+        .playerNumber {
+            font-size: 40px;
+        
+        }
+        .walltype {
+            width: 80px;
+            height: 80px;
+            border: 1px solid black;
+            float: right;
         }
         .player {
             margin: 3px;
@@ -58,6 +84,12 @@
             padding: 3px;
             background-color: black;
         }
+        .statusMessageBox {
+            border: 1px solid black;
+            margin: 1px;
+            padding: 1px;
+            height: 25px;
+        }
 		</style>
 	</head>
 	
@@ -67,18 +99,29 @@
     </div>
     <div id="content">
       <div id="gameDetails">
-        <div id="wallselector">
-          Wall Type:
-          <canvas id="walltype">
-          </canvas>
+        <div class="controlsLeft">
+            <div class="gameButton" id="startOver">Start Over</div>
+            <div class="gameButton" id="switchSides">Switch Sides</div>
+            <div class="playComputer">
+              Play Computer:
+              <input type="checkbox" name="computer" value="computer" onclick="playComputer(this)">
+            </div>   
         </div>
-        <div id="wallselector">
-          Play Computer:
-          <input type="checkbox" name="computer" value="computer" onclick="playComputer(this)">
-        </div>    
-        <br/>
-        <br/>
-        <div>Status: <span id="current_player"></span></div>
+        <div class="controlsRight">
+            <div class="currentPlayer">
+                <div class="playerNumberTitle">Player</div>
+                <div class="playerNumber" id="playerNumber">1</div>
+            </div>
+            <div class="wallselector" id="wallselector">
+              <canvas class="walltype" id="walltype">
+              </canvas>
+            </div>
+        </div>
+        <div id="gameboard">
+            <canvas id="corridor">
+            </canvas>	      
+        </div> 
+        <div class="statusMessageBox"><span id="statusMessage"></span></div>
         <div class="player">
             <div class="name">Player 1</div>
             <div class="details">Walls Remaining:<span id="p1_walls"></span></div>
@@ -87,15 +130,6 @@
             <div class="name">Player 2</div>
             <div class="details">Walls Remaining:<span id="p2_walls"></span></div>
         </div>
-        <div class="gameButton" id="startOver">Start Over</div>
-        <div class="gameButton" id="switchSides">Switch Sides</div></div>
-      <div id="gameboard">
-        <canvas id="corridor">
-        </canvas>	      
-      </div>
-      <div id="moveList">
-        Move List
-      </div>
     </div>
 	</body>
 </html>

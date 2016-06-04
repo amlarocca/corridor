@@ -90,7 +90,7 @@ function setupBoard(reset)
     getJSON(url,
     function(err, data) {
           if (err != null) {
-            alert("Something went wrong: " + err);
+            updateStatus("Something went wrong: " + err);
           } else {
             //alert("Your query count: " + data.players);
             if (!game_id || reset) {
@@ -184,7 +184,7 @@ function wait_for_opponent_move() {
             getJSON(url,
                 function(err, data) {
                 if (err != null) {
-                    alert("Something went wrong: " + err);
+                    updateStatus("Something went wrong: " + err);
                 } else if (data.timestamp != current_board.timestamp) {
                     setupBoard();
                     board_changed = true;
@@ -200,19 +200,24 @@ function wait_for_opponent_move() {
     );
 }
 
+function updateStatus(message) {
+    document.getElementById("statusMessage").textContent=message;
+        
+}
+
 function botMove()
 {
     if (play_computer & current_board.current_player != player_number) {
+        updateStatus("Player " + (current_board.current_player + 1) + " Thinking...")
         data = {}
         //data.board = current_board
         data.game_id = current_board.game_id
         data.player = (player_number + 1) % 2
         data.opponent = player_number
         data.move_num = move_num
-        document.getElementById("current_player").textContent="Player " + (current_board.current_player + 1) + " Thinking...";
         postJSON("http://tools.zensky.com/corridor/bot_move",data, function(err, data2) {
             if (err != null) {
-                alert(data2);
+                updateStatus(data2);
             } else {
                 setTimeout(function() { 
                     board = JSON.parse(data2)
@@ -236,7 +241,7 @@ function makeMove(board,x,y)
     postJSON("http://tools.zensky.com/corridor/make_move",data,
       function(err, data2) {
           if (err != null) {
-               alert(data2);
+               updateStatus(data2);
           } else {
               board = JSON.parse(data2)
               renderBoard(board)
@@ -260,19 +265,20 @@ function placeWall(orientation, x,y)
     postJSON("http://tools.zensky.com/corridor/place_wall",data,
       function(err, data2) {
           if (err != null) {
-               alert(data2);
+               updateStatus(data2);
           } else {
               board = JSON.parse(data2)
               renderBoard(board)
               current_board = board
               move_num += 1
+              wait_for_opponent_move()
               botMove()
         }
     });
 }
 function boardClicked(event) {
     if (current_board.current_player != player_number) {
-        alert('Not your turn fool!');
+        updateStatus('Not your turn fool!');
     } else {
         
         var elem = document.getElementById('corridor')
@@ -382,9 +388,9 @@ function renderBoard(board)
     }
     document.getElementById("p1_walls").textContent=board.players[0].walls;
     document.getElementById("p2_walls").textContent=board.players[1].walls;
-    document.getElementById("current_player").textContent="Player " + (board.current_player + 1) + "'s Turn";
+    updateStatus("Player " + (board.current_player + 1) + "'s Turn");
     renderWallSelector();
     if (board.winner) {
-        alert("Player " + (board.winner + 1) + " Wins!")
+        updateStatus("Player " + (board.winner + 1) + " Wins!")
     }
 }

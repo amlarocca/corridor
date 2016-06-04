@@ -96,7 +96,7 @@ def make_move():
         b.move_player(player,x,y,trace=True)
         b.status = "active"
     except:
-        abort(400,str(sys.exc_info()))
+        abort(400,str(sys.exc_info()[1]))
     return build_response(game_id,b)
 
 @app.route('/place_wall', methods=['POST'])
@@ -115,7 +115,7 @@ def place_wall():
         b.add_wall(orientation,x,y,player)
         b.status = "active"
     except:
-        abort(400,str(sys.exc_info()))
+        abort(400,str(sys.exc_info()[1]))
 
     return build_response(game_id,b)
 
