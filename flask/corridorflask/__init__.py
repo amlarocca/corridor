@@ -18,7 +18,7 @@ def hello():
     return "Hello World!"
 
 def build_response(game_id,board,write=True):
-    if write:
+    if write or not board.timestamp:
         write_board_to_redis(game_id,board)
     response = {}
     response['game_id'] = game_id
