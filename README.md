@@ -19,10 +19,13 @@ Flask Application:
 Web Application (HTML/CSS):
 - Responsive UI: phone compatible
   - Scale board to screen size for phone
-- Start polling any time it isn't players turn
-- stop polling when game ends
-- Why keep polling when it is my move?
-- dont' poll when I'm playing the computer
+- Errors into a status message
+- Better indiation of winner and game stoppage.
+- Polling
+  - Start polling any time it isn't players turn
+  - stop polling when game ends
+  - Keep polling when it is my move? (to maintain active state?)
+  - dont' poll when I'm playing the computer
 - Ability to change name
 - Highlight active player name and game piece
 - Ghost for valid moves
