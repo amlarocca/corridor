@@ -1,10 +1,6 @@
 # corridor
 # Customer Feedback
-- Which one is me
-- Why do I have to move to start polling?
-- Why keep polling when it is my move?
-- why poll when I'm playing the computer
-- 
+
 
 # TODO
 
@@ -23,13 +19,19 @@ Flask Application:
 Web Application (HTML/CSS):
 - Responsive UI: phone compatible
   - Scale board to screen size for phone
-- Number of walls in wall type selector
+- Start polling any time it isn't players turn
+- stop polling when game ends
+- Why keep polling when it is my move?
+- dont' poll when I'm playing the computer
 - Ability to change name
 - Highlight active player name and game piece
 - Ghost for valid moves
+- put player number in url immediately
+- put if computer player in url
+- detect if opponent online via polling
+- put configuration on git
 - Display moves list (low)
 - Matchmaking
-  - Share via url with key
   - public vs. private
   - first in gets Player 1
   - next gets Player 2, game starts
