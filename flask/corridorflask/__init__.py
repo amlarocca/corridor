@@ -17,8 +17,9 @@ r = None
 def hello():
     return "Hello World!"
 
-def build_response(game_id,board):
-    write_board_to_redis(game_id,board)
+def build_response(game_id,board,write=True):
+    if write:
+        write_board_to_redis(game_id,board)
     response = {}
     response['game_id'] = game_id
     response['players'] = [{'position':player.position,'walls':player.walls,'goal':player.goal} for player in board.players]
@@ -45,7 +46,7 @@ def get_board():
             b = build_board()
     except:
         abort(400,str(sys.exc_info())) 
-    return build_response(game_id,b)
+    return build_response(game_id,b,write=False)
 
 def build_board(board=None):
     if not board:

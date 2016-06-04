@@ -98,10 +98,10 @@ function setupBoard(reset)
                 var new_uri = updateQueryStringParameter(window.location.href,'game_id',data.game_id);
                 window.location.href = new_uri;
             } else {
-                renderBoard(data)
                 current_board = data
-                if (current_board.current_player != player_number)
-                    botMove()
+                renderBoard()
+                //if (current_board.current_player != player_number)
+                //    botMove()
             }
         }
     });
@@ -154,6 +154,7 @@ var postJSON = function(url,body,callback) {
     xhr.send(JSON.stringify(body));
 };
 
+board_changed = false;
 function poll(fn, callback, errback, timeout, interval) {
     var endTime = Number(new Date()) + (timeout || 300000);
     interval = interval || 5000;
@@ -169,35 +170,45 @@ function poll(fn, callback, errback, timeout, interval) {
             }
             // Didn't match and too much time, reject!
             else {
-                errback(new Error('timed out for ' + fn + ': ' + arguments));
+                //errback(new Error('timed out for ' + fn + ': ' + arguments));
+                errback();
             }
     })();
 }
 
 // Usage:  ensure element is visible
+already_polling = false;
 function wait_for_opponent_move() {
-    poll(
-        function() {
-            board_changed = false;
-            url = "http://tools.zensky.com/corridor/get_board"
-            game_id = getParameterByName('game_id')
-            getJSON(url,
-                function(err, data) {
-                if (err != null) {
-                    updateStatus("Something went wrong: " + err);
-                } else if (data.timestamp != current_board.timestamp) {
-                    setupBoard();
-                    board_changed = true;
-                }}
-            );
-            return board_changed;
-        },
-        function() {
-        },
-        function() {
-            // Error, failure callback
-        }
-    );
+    console.log('called wait_for_opponent_move, already polling:' + already_polling)
+    if (!already_polling) {
+        already_polling = true;
+        poll(
+            function() {
+                url = "http://tools.zensky.com/corridor/get_board"
+                game_id = getParameterByName('game_id')
+                getJSON(url,
+                    function(err, data) {
+                    if (err != null) {
+                        updateStatus("Something went wrong: " + err);
+                    } else if (data.timestamp != current_board.timestamp) {
+                        setupBoard();
+                        console.log('the board changed!' + data.timestamp + ' different from ' + current_board.timestamp)
+                        board_changed = true;
+                    }}
+                );
+                return board_changed;
+            },
+            function() {
+                console.log('in callback for wait_for_opponent_move, unsetting polling flag')
+                already_polling = false;
+            },
+            function() {
+                console.log('error calback')
+                already_polling = false;
+                // Error, failure callback
+            }
+        );
+    }
 }
 
 function updateStatus(message) {
@@ -207,26 +218,30 @@ function updateStatus(message) {
 
 function botMove()
 {
-    if (play_computer & current_board.current_player != player_number) {
-        updateStatus("Player " + (current_board.current_player + 1) + " Thinking...")
-        data = {}
-        //data.board = current_board
-        data.game_id = current_board.game_id
-        data.player = (player_number + 1) % 2
-        data.opponent = player_number
-        data.move_num = move_num
-        postJSON("http://tools.zensky.com/corridor/bot_move",data, function(err, data2) {
-            if (err != null) {
-                updateStatus(data2);
-            } else {
-                setTimeout(function() { 
-                    board = JSON.parse(data2)
-                    renderBoard(board)
-                    current_board = board
-                    move_num += 1
-                }, botDelay); 
-            }
-        });
+    if (current_board.current_player != player_number) {
+        if (play_computer) {
+            updateStatus("Player " + (current_board.current_player + 1) + " Thinking...")
+            data = {}
+            //data.board = current_board
+            data.game_id = current_board.game_id
+            data.player = (player_number + 1) % 2
+            data.opponent = player_number
+            data.move_num = move_num
+            postJSON("http://tools.zensky.com/corridor/bot_move",data, function(err, data2) {
+                if (err != null) {
+                    updateStatus(data2);
+                } else {
+                    setTimeout(function() { 
+                        board = JSON.parse(data2)
+                        current_board = board
+                        renderBoard()
+                        move_num += 1
+                    }, botDelay); 
+                }
+            });
+        } else {    
+            wait_for_opponent_move()        
+        }
     }
 }
 
@@ -244,10 +259,9 @@ function makeMove(board,x,y)
                updateStatus(data2);
           } else {
               board = JSON.parse(data2)
-              renderBoard(board)
               current_board = board
+              renderBoard()
               move_num += 1
-              wait_for_opponent_move()
               botMove()
         }
     });
@@ -268,10 +282,9 @@ function placeWall(orientation, x,y)
                updateStatus(data2);
           } else {
               board = JSON.parse(data2)
-              renderBoard(board)
               current_board = board
+              renderBoard()
               move_num += 1
-              wait_for_opponent_move()
               botMove()
         }
     });
@@ -313,7 +326,7 @@ function boardClicked(event) {
     }
 }
 
-function renderBoard(board)
+function renderBoard()
 { 
     var canvas = document.getElementById("corridor");
     var totalWidth = size * cell_width + (size -1) * wall_width
@@ -341,24 +354,24 @@ function renderBoard(board)
       
             // We'll use black unless there is a wall
             context2D.fillStyle = "black";    
-            for (var wall = 0; wall < board.walls_h.length; wall++) {
-                pos = board.walls_h[wall]
+            for (var wall = 0; wall < current_board.walls_h.length; wall++) {
+                pos = current_board.walls_h[wall]
                 if ((row - 1)/ 2 == pos[1] && column  >= 2*pos[0] && column <= 2*pos[0]+2)
                 {
                     context2D.fillStyle = "white";
                 }
             }
-            for (var wall = 0; wall < board.walls_v.length; wall++) {
-                pos = board.walls_v[wall]
+            for (var wall = 0; wall < current_board.walls_v.length; wall++) {
+                pos = current_board.walls_v[wall]
                 if ((column - 1) / 2 == pos[0] && row >=2*pos[1] && row <= 2*pos[1]+2) {
                     context2D.fillStyle = "white";
                 }
             }
             context2D.fillRect(col_offset, row_offset, width-1,height-1);
             
-            for (var player = 0; player < board.players.length; player++)
+            for (var player = 0; player < current_board.players.length; player++)
             {
-                pos = board.players[player].position
+                pos = current_board.players[player].position
                 if (column / 2 == pos[0] && row / 2 == pos[1])
                 {
                     context2D.beginPath();
@@ -370,7 +383,7 @@ function renderBoard(board)
                     context2D.strokeStyle = '#003300';
                     context2D.stroke();
                     
-                    if (board.current_player == player) {
+                    if (current_board.current_player == player) {
                         context2D.beginPath();
                         context2D.arc(col_offset + (width/2), row_offset + (height/2), (width/2)-4, 0, 2 * Math.PI, false);
                         context2D.lineWidth = 3;
@@ -386,11 +399,12 @@ function renderBoard(board)
         
         row_offset = row_offset + height;
     }
-    document.getElementById("p1_walls").textContent=board.players[0].walls;
-    document.getElementById("p2_walls").textContent=board.players[1].walls;
-    updateStatus("Player " + (board.current_player + 1) + "'s Turn");
+    document.getElementById("p1_walls").textContent=current_board.players[0].walls;
+    document.getElementById("p2_walls").textContent=current_board.players[1].walls;
+    document.getElementById("playerNumber").textContent=(player_number + 1);
+    updateStatus("Player " + (current_board.current_player + 1) + "'s Turn");
     renderWallSelector();
-    if (board.winner) {
-        updateStatus("Player " + (board.winner + 1) + " Wins!")
+    if (current_board.winner) {
+        updateStatus("Player " + (current_board.winner + 1) + " Wins!")
     }
 }
