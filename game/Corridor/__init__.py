@@ -266,13 +266,13 @@ class Board():
                                 print sys.exc_info()
             
     def check_player_goal_status(self,player):
-        return self.check_goal_status(self.players[player].position,self.players[player].goal)
+        return self.check_goal_status(self.players[player].position,self.players[player].goal,allow_same=True)
                                       
-    def check_goal_status(self,node,goal,trace=False):
+    def check_goal_status(self,node,goal,allow_same=False,trace=False):
         if trace:
             print 'checking goal status',node,goal
         # it's not a goal if a player is already there
-        if tuple(node) in [tuple(p.position) for p in self.players]:
+        if not allow_same and tuple(node) in [tuple(p.position) for p in self.players]:
             return False
         elif ((goal[0] == 'h' and goal[1] == node[1]) or
             (goal[0] == 'v' and goal[1] == node[0]) or
