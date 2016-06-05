@@ -237,7 +237,7 @@ class Board():
             if (tuple(node) not in visited) or (tuple(node) in visited and len(path) <= len(visited[tuple(node)][0])):
                 if tuple(node) not in visited or len(path) < len(visited[tuple(node)][0]):
                     if trace:
-                        print 'replacing path for:',node,'=',path
+                        print 'replacing path for:',node,'=',path,' old path:',visited[tuple(node)][0]
                     visited[tuple(node)] = [path]
                 else:
                     if trace:
