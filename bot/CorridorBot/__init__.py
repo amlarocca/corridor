@@ -124,10 +124,15 @@ class CorridorBot():
         if trace:
             print 'found',len(goals),'goals'
         for goal in goals:
-            if min_length == 0 or len(goal) < min_length:
+            goal_length = len(goal)
+            # reduce calculated path length by number of hops starting with second move
+            for node in goal[1:]:
+                if (tuple(node) in set([tuple(p.position) for p in board.players]))
+                    goal_length = goal_length - 1
+            if min_length == 0 or goal_length < min_length:
                 if trace:
                     print'found shorter goal',goal
-                min_length = len(goal)
+                min_length = goal_length
                 accepted_path = goal
             else:
                 if trace:
