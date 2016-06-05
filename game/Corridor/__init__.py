@@ -100,7 +100,11 @@ class Board():
             print 'visited nodes',visited
         for path in visited:
             if len(visited[path]) > 1:
-                move = visited[path][1]
+                if len(visited[path]) > 2 and tuple(move) in set([tuple(p.position) for p in self.players]):
+                    # For now let's only support hopping one player (2 person game)
+                    move = visited[path][2]
+                else:
+                    move = visited[path][1]
                 if move != self.players[player].position:
                     valid_moves.add(move)
         return list(valid_moves)
