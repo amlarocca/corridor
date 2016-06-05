@@ -12,6 +12,7 @@ var wall_type = "H"
 var player_number = 1
 var botDelay = 500
 var play_computer = false
+var api_url = "http://corridor.zensky.com/corridor/"
 
 window.onload = initializeBoard;
 
@@ -78,7 +79,7 @@ function setupBoard(reset)
 {
     // get game_id from url, if available
     // get player_number from url, if available
-    url = "http://tools.zensky.com/corridor/get_board"
+    url = api_url + "get_board"
     game_id = getParameterByName('game_id')
     if (!reset & game_id != '') {
         url = updateQueryStringParameter(url,"game_id",game_id)
@@ -186,7 +187,7 @@ function wait_for_opponent_move() {
         poll(
             function() {
                 if (!board_changed) {
-                    url = "http://tools.zensky.com/corridor/get_board"
+                    url = api_url + "get_board"
                     game_id = getParameterByName('game_id')
                     url = updateQueryStringParameter(url,"game_id",game_id)
                     getJSON(url,
@@ -232,7 +233,7 @@ function botMove()
             data.player = (player_number + 1) % 2
             data.opponent = player_number
             data.move_num = move_num
-            postJSON("http://tools.zensky.com/corridor/bot_move",data, function(err, data2) {
+            postJSON(api_url + "bot_move",data, function(err, data2) {
                 if (err != null) {
                     updateStatus(data2);
                 } else {
@@ -258,7 +259,7 @@ function makeMove(board,x,y)
     data.x = x
     data.y = y
     data.player = player_number
-    postJSON("http://tools.zensky.com/corridor/make_move",data,
+    postJSON(api_url + "make_move",data,
       function(err, data2) {
           if (err != null) {
                updateStatus(data2);
@@ -281,7 +282,7 @@ function placeWall(orientation, x,y)
     data.y = y;
     data.player = player_number
     data.orientation = orientation
-    postJSON("http://tools.zensky.com/corridor/place_wall",data,
+    postJSON(api_url + "place_wall",data,
       function(err, data2) {
           if (err != null) {
                updateStatus(data2);
