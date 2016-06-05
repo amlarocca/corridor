@@ -237,14 +237,14 @@ class Board():
             if (tuple(node) not in visited) or (tuple(node) in visited and len(path) <= len(visited[tuple(node)][0])):
                 if tuple(node) not in visited or len(path) < len(visited[tuple(node)][0]):
                     if trace:
-                        print 'replacing path for:',node,'=',path,' old path:',visited[tuple(node)][0]
+                        print 'replacing path for:',node,'=',path
                     visited[tuple(node)] = [path]
                 else:
                     if trace:
                         print 'adding additional path for node',node,'=',path
                     visited[tuple(node)].append(path)
                 # as long as this isn't a goal node, keep branching
-                if not self.check_goal_status(node,goal):
+                if not self.check_goal_status(tuple(node),goal):
                     # the search order is actually really important and for optimization
                     # should probably try move towards goal
                     # order: y-1,x+1,x-1,y+1
