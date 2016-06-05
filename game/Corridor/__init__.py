@@ -88,15 +88,18 @@ class Board():
         return goal_reached
 
     def get_valid_moves(self,player,trace=True):
-        valid_moves = []
-        shortest_paths = self.get_shortest_goal_paths(self.players[player].position,
-                                                      self.players[player].goal,
-                                                      depth=len(self.players)+1,
-                                                      trace=trace)
+        valid_moves = set()
+        visited = {}
+        self.shortest_goal_paths(self.players[player].position,
+                                  self.players[player].goal,
+                                  [],
+                                  visited,
+                                  depth=len(self.players),
+                                  trace=trace)
         if trace:
             print 'got shortest paths',shortest_paths
-        for path in shortest_paths:
-            valid_moves.append(path[1])
+        for path in visited:
+            valid_moves.add(visited[path][1])
         return valid_moves   
         
     def can_move_player(self,player,x,y,allow_overlap=False,trace=False):            
