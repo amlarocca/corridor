@@ -102,11 +102,10 @@ class Board():
             if len(visited[path]) > 1:
                 if len(visited[path]) > 2 and tuple(move) in set([tuple(p.position) for p in self.players]):
                     # For now let's only support hopping one player (2 person game)
-                    move = visited[path][2]
+                    valid_moves.add([path][2])
                 else:
-                    move = visited[path][1]
-                if move != self.players[player].position:
-                    valid_moves.add(move)
+                    valid_moves.add(visited[path][1])
+
         return list(valid_moves)
         
     def can_move_player(self,player,x,y,allow_overlap=False,trace=False):            
