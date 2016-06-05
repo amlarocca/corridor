@@ -126,7 +126,7 @@ class CorridorBot():
         accepted_path = None
         min_length = 0
         if trace:
-            print 'found',len(goals),'goals'
+            print 'found',len(goals),'goals',goals
         for goal in goals:
             goal_length = len(goal)
             # reduce calculated path length by number of hops starting with second move
