@@ -5,35 +5,24 @@
 # TODO
 
 Game Libary:
-- Return: shortest paths (UI feature to highlight)
-- Return: move list
-- New Method: get_valid_moves(player)
-  - Any valid move in search with depth == num_players
-
-Flask Application:
-- Identity management via cookie
-- Persistence via Redis
-  - Append for move list
-- Assign unique key for new games
+- Bug: jumping opponent occasional (keep ALL shortest paths)
+- return any valid move in search with depth == num_players
 
 Web Application (HTML/CSS):
-- Responsive UI: phone compatible
-  - Scale board to screen size for phone
-- Errors into a status message
-- Better indiation of winner and game stoppage.
-- Polling
-  - Start polling any time it isn't players turn
-  - stop polling when game ends
-  - Keep polling when it is my move? (to maintain active state?)
-  - dont' poll when I'm playing the computer
-- Ability to change name
+- if game_mode = not started, option to: switch sides / get a link / play computer
+  - already polling at this point so game can start at any time if link joined or in "public mode"
+- if game_mode = completed, don't allow moves, polling, show winner overlay, new game button
+- Scale board to screen size for phone
+- Errors messages glow a color and then fade
+- "Place Wall or Move Piece"
+- polling bug when user interacts
 - Highlight active player name and game piece
 - Ghost for valid moves
 - put player number in url immediately
 - put if computer player in url
 - detect if opponent online via polling
-- put configuration on git
 - Display moves list (low)
+- Ability to change name
 - Matchmaking
   - public vs. private
   - first in gets Player 1
@@ -42,7 +31,12 @@ Web Application (HTML/CSS):
   - If no parter yet, player can start with computer
   - Additional players in observer mode
 
+Flask Application:
+- Identity management via cookie
+- Append data structure for move list in Redis 
+
 Overall:
+- Complete code refactor
 - Python version upgrade from 2.6
 
 # Tutorial
