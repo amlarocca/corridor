@@ -423,7 +423,7 @@ function renderBoard()
     document.getElementById("playerNumber").textContent=(player_number + 1);
     updateStatus("Player " + (current_board.current_player + 1) + "'s Turn");
     renderWallSelector();
-    if (current_board.winner === player_numer) {
+    if (current_board.winner === player_number) {
         updateStatus("You win!")
     }else if (current_board.winner) {
         updateStatus("Player " + (current_board.winner + 1) + " Wins!")
