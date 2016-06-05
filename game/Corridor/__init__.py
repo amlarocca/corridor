@@ -97,7 +97,7 @@ class Board():
                                   depth=len(self.players),
                                   trace=trace)
         if trace:
-            print 'got shortest paths',shortest_paths
+            print 'visited nodes',visited
         for path in visited:
             valid_moves.add(visited[path][1])
         return valid_moves   
