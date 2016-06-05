@@ -99,7 +99,8 @@ class Board():
         if trace:
             print 'visited nodes',visited
         for path in visited:
-            valid_moves.add(visited[path][1])
+            if len(path) > 1:
+                valid_moves.add(visited[path][1])
         return valid_moves   
         
     def can_move_player(self,player,x,y,allow_overlap=False,trace=False):            
