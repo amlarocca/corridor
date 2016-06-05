@@ -425,7 +425,7 @@ function renderBoard()
     renderWallSelector();
     if (current_board.winner === player_numer) {
         updateStatus("You win!")
-    }else if (current_board.winner)
+    }else if (current_board.winner) {
         updateStatus("Player " + (current_board.winner + 1) + " Wins!")
     }
 }
