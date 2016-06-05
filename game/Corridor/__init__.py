@@ -99,7 +99,7 @@ class Board():
         if trace:
             print 'visited nodes',visited
         for path in visited:
-            if len(path) > 1:
+            if len(visited[path]) > 1:
                 valid_moves.add(visited[path][1])
         return valid_moves   
         
