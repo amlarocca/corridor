@@ -132,7 +132,8 @@ class CorridorBot():
             # reduce calculated path length by number of hops starting with second move
             for node in goal:
                 if (tuple(node) in set([tuple(p.position) for p in board.players])):
-                    print('reducing path length because of player jump')
+                    if trace:
+                        print('reducing path length because of player jump')
                     goal_length = goal_length - 1
             if min_length == 0 or goal_length < min_length:
                 if trace:
