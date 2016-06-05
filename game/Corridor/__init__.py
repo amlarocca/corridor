@@ -33,10 +33,10 @@ class Board():
         if (((x,y) in self.walls['h'].union(self.walls['v'])) or
             (orientation == 'h' and len(set([(x-1,y),(x+1,y)]).intersection(self.walls['h'])) > 0) or
             (orientation == 'v' and len(set([(x,y-1),(x,y+1)]).intersection(self.walls['v'])) > 0)):
-            raise ValueError('walls cannot intersect other walls')
+            raise ValueError('Walls cannot intersect other walls.')
         # 3. Player must have enough walls
         if self.players[player].walls < 1:
-            raise ValueError('player has no walls')
+            raise ValueError('Player has no walls.')
         
         # Alright fine, add the wall
         self.walls[orientation].add((x,y))
@@ -50,7 +50,7 @@ class Board():
             if not self.can_reach_goal(self.players[player].position,visited,player):
                 self.walls[orientation].remove((x,y))
                 self.players[player].walls += 1
-                raise ValueError('cannot prevent any player from reaching their goal')
+                raise ValueError('Cannot prevent any player from reaching their goal.')
 
         self.next_player()
         
@@ -130,7 +130,7 @@ class Board():
         
         # 3. Player must not end in same place as another player
         if (x,y) in opp_positions and not allow_overlap:
-            raise ValueError('player cannot occupy same space as another player')
+            raise ValueError('Player cannot occupy same space as another player.')
             
         # 4. Player must not pass through any walls and move must be 
         #   at most one space horizontally or vertically unless
@@ -145,7 +145,7 @@ class Board():
             for intersection in range(current[1],y,step):
                 if (x,intersection) not in opp_positions:
                     print (x,intersection),opp_positions
-                    raise ValueError('trying to move more than one square without hops')
+                    raise ValueError('Trying to move more than one square without hops.')
                 #print x,intersection,self.walls['h'] # 4 4 set([(4, 4), (3, 3)])
                 
                 wall_intersection = intersection
@@ -154,7 +154,7 @@ class Board():
                 if (x,wall_intersection) in self.walls['h'] or (x-1,wall_intersection) in self.walls['h']:
                     if trace:
                         print x,wall_intersection,self.walls['h']
-                    raise ValueError('blocked by horizontal wall')
+                    raise ValueError('Blocked by horizontal wall.')
         # else if this is a purely vertical move:
         elif current[1] == y:
             step = 1
@@ -163,18 +163,18 @@ class Board():
             # if this is more than one square, there better be an opponent at each stop!
             for intersection in range(current[0],x,step):
                 if (intersection,y) not in opp_positions:
-                    raise ValueError('trying to move more than one square without hops')
+                    raise ValueError('Trying to move more than one square without hops.')
                 #print intersection,y,self.walls['v']
                 wall_intersection = intersection
                 if step == -1:
                     wall_intersection -= 1
                 if (wall_intersection,y) in self.walls['v'] or (wall_intersection,y-1) in self.walls['v']:
-                    raise ValueError('blocked by vertical wall')
+                    raise ValueError('Blocked by vertical wall.')
         # else this is an adjacent move and is only valid if hopping opponent
         else:
             # We know the start and end spots, so let's get the shortest valid paths
             if not self.is_valid_path(current,(x,y),depth=4):
-                raise ValueError('invalid multi-space move: '+str(current)+' to '+str((x,y)))
+                raise ValueError('Invalid multi-space move.') #+str(current)+' to '+str((x,y)))
         return True
     
     # We will find the shortest goal paths and find one that contains only players in intermediate spots
