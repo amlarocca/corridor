@@ -113,7 +113,7 @@ class CorridorBot():
             # shortest_goal_paths(self,node,goal,path,visited,depth=10,trace=False):
             board.shortest_goal_paths(board.players[player].position,
                                       board.players[player].goal,[],visited,depth=i,trace=trace)
-            goals = [visited[node] for node in visited 
+            goals = [goal for goal in visited[node] for node in visited 
                      if (board.check_goal_status(node,board.players[player].goal) and
                          tuple(node) not in set([tuple(p.position) for p in board.players]))]
             if len(goals) > 0:

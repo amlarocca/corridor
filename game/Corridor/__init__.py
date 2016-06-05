@@ -98,13 +98,14 @@ class Board():
                                   trace=trace)
         if trace:
             print 'visited nodes',visited
-        for path in visited:
-            if len(visited[path]) > 1:
-                if tuple(visited[path][1]) in set([tuple(p.position) for p in self.players]):
-                    if len(visited[path]) > 2:
-                        valid_moves.add(visited[path][2])
-                else:
-                    valid_moves.add(visited[path][1])
+        for node in visited:
+            for path in visited[node]:
+                if len(path) > 1:
+                    if tuple(path[1]) in set([tuple(p.position) for p in self.players]):
+                        if len(path) > 2:
+                            valid_moves.add(path[2])
+                    else:
+                        valid_moves.add(path[1])
 
         return list(valid_moves)
         
@@ -199,7 +200,7 @@ class Board():
         for i in range(depth):
             visited = {}
             self.shortest_goal_paths(start,goal,[],visited,depth=i,trace=trace)
-            goals = [visited[node] for node in visited if self.check_goal_status(node,goal)]
+            goals = [goal for goal in visited[node] for node in visited if self.check_goal_status(node,goal)]
             if len(goals) > 0:
                 break
         if trace:
@@ -233,8 +234,11 @@ class Board():
                 print 'appending node',node
             # if we have been here before
             # we save the path as long as we didn't get here faster before
-            if (tuple(node) not in visited) or (tuple(node) in visited and len(path) < len(visited[tuple(node)])):
-                visited[tuple(node)] = path
+            if (tuple(node) not in visited) or (tuple(node) in visited and len(path) <= len(visited[tuple(node)][0])):
+                if len(path) < len(visited[tuple(node)][0]:
+                    visited[tuple(node)] = [path]
+                else:
+                    visited[tuple(node)].append(path)
                 if trace:
                     print 'updating shortest path for node',node
                 # as long as this isn't a goal node, keep branching
