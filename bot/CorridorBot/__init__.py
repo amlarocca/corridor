@@ -118,7 +118,7 @@ class CorridorBot():
                 if (board.check_goal_status(node,board.players[player].goal) and
                     tuple(node) not in set([tuple(p.position) for p in board.players])):
                     for goal in visited[node]:
-                        goals.add(goal)     
+                        goals.add(tuple(goal))     
 
             if len(goals) > 0:
                 break
