@@ -421,7 +421,11 @@ function renderBoard()
     document.getElementById("p1_walls").textContent=current_board.players[0].walls;
     document.getElementById("p2_walls").textContent=current_board.players[1].walls;
     document.getElementById("playerNumber").textContent=(player_number + 1);
-    updateStatus("Player " + (current_board.current_player + 1) + "'s Turn");
+    if (current_board.current_player == player_number) {
+        updateStatus("Your turn: Place wall or move game piece")
+    } else {
+        updateStatus("Player " + (current_board.current_player + 1) + "'s Turn");
+    }
     renderWallSelector();
     if (current_board.winner === player_number) {
         updateStatus("You win!")
