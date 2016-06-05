@@ -200,7 +200,7 @@ class Board():
         for i in range(depth):
             visited = {}
             self.shortest_goal_paths(start,goal,[],visited,depth=i,trace=trace)
-            goals = [goal for goal in visited[node] for node in visited if self.check_goal_status(node,goal)]
+            goals = [step for step in visited[node] for node in visited if self.check_goal_status(node,goal)]
             if len(goals) > 0:
                 break
         if trace:
