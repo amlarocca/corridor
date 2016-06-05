@@ -361,6 +361,22 @@ function renderBoard()
             }
             context2D.fillRect(col_offset, row_offset, width-1,height-1);
             
+            for (var valid_move_num = 0; valid_move_num < current_board.valid_moves.length; valid_move_num++) {
+                valid_move = current_board.valid_moves[valid_move_num];
+                if (column / 2 == pos[0] && row / 2 == pos[1])
+                {
+                    context2D.beginPath();
+                    context2D.arc(col_offset + (width/2), row_offset + (height/2), (width/2)-2, 0, 2 * Math.PI, false);
+                    if (player == 0) { context2D.fillStyle = 'white'; };
+                    if (player == 1) { context2D.fillStyle = 'grey'; };
+                    //context2D.fill();
+                    context2D.lineWidth = 1;
+                    context2D.strokeStyle = '#003300';
+                    context2D.stroke();
+                }
+            
+            }
+            
             for (var player = 0; player < current_board.players.length; player++)
             {
                 pos = current_board.players[player].position
