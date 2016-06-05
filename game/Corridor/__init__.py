@@ -87,7 +87,7 @@ class Board():
                         pass
         return goal_reached
 
-    def get_valid_moves(self,player,trace=False):
+    def get_valid_moves(self,player,trace=True):
         valid_moves = []
         shortest_paths = self.get_shortest_goal_paths(self.players[player].position,
                                                       self.players[player].goal,
