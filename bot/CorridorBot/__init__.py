@@ -60,7 +60,7 @@ class CorridorBot():
             longest_wall = None
             for wall in wall_options:
                 try:
-		    # Rather than just keeping the first wall that works, we should keep the wall which
+            # Rather than just keeping the first wall that works, we should keep the wall which
                     # increases the opponents shortest path the most
                     # This will require supporting either wall removal or "temporary walls" as well
                     # as a more robust set of walls based on the entire path (loop on opponent path)
@@ -77,7 +77,7 @@ class CorridorBot():
             if longest_wall:
                 b.add_wall(*longest_wall)
                 wall_placed = True
-		print 'placed wall'
+        print 'placed wall'
 
         # if we didn't place a wall, make a move
         if not wall_placed:
@@ -88,7 +88,7 @@ class CorridorBot():
                 # For now let's only support hopping one player (2 person game)
                 move = goal[2]
             if move:
-		        print 'Moving',current_player,'to',(move[0],move[1])
+                print 'Moving',current_player,'to',(move[0],move[1])
                 b.move_player(current_player,move[0],move[1])
             else:
                 raise ValueError('No Path to Goal')
