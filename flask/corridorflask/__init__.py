@@ -137,7 +137,7 @@ def bot_move():
             game_id = get_game_id()
             b = build_board(request.json['board'])
         bot = CorridorBot()
-        bot.make_move(b,player,opponent,move_num,trace=False)
+        bot.make_move(b,player,opponent,move_num,trace=True)
         b.status = "active"
     except:
         abort(400,str(sys.exc_info()))
