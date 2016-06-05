@@ -236,11 +236,13 @@ class Board():
             # we save the path as long as we didn't get here faster before
             if (tuple(node) not in visited) or (tuple(node) in visited and len(path) <= len(visited[tuple(node)][0])):
                 if tuple(node) not in visited or len(path) < len(visited[tuple(node)][0]):
+                    if trace:
+                        print 'replacing path for:',node
                     visited[tuple(node)] = [path]
                 else:
+                    if trace:
+                        print 'adding additional path for node',node
                     visited[tuple(node)].append(path)
-                if trace:
-                    print 'updating shortest path for node',node
                 # as long as this isn't a goal node, keep branching
                 if not self.check_goal_status(node,goal):
                     # the search order is actually really important and for optimization
