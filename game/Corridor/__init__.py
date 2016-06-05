@@ -96,7 +96,7 @@ class Board():
         if trace:
             print 'got shortest paths',shortest_paths
         for path in shortest_paths:
-            valid_moves.append(path[1]
+            valid_moves.append(path[1])
         return valid_moves   
         
     def can_move_player(self,player,x,y,allow_overlap=False,trace=False):            
