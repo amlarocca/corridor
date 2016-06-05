@@ -235,7 +235,7 @@ class Board():
             # if we have been here before
             # we save the path as long as we didn't get here faster before
             if (tuple(node) not in visited) or (tuple(node) in visited and len(path) <= len(visited[tuple(node)][0])):
-                if len(path) < len(visited[tuple(node)][0]):
+                if tuple(node) not in visited or len(path) < len(visited[tuple(node)][0]):
                     visited[tuple(node)] = [path]
                 else:
                     visited[tuple(node)].append(path)
