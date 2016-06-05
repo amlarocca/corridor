@@ -6,7 +6,6 @@
 
 Game Libary:
 - Bug: jumping opponent occasional (keep ALL shortest paths)
-- return any valid move in search with depth == num_players
 
 Web Application (HTML/CSS):
 - if game_mode = not started, option to: switch sides / get a link / play computer
@@ -17,9 +16,6 @@ Web Application (HTML/CSS):
 - "Place Wall or Move Piece"
 - polling bug when user interacts
 - Highlight active player name and game piece
-- Ghost for valid moves
-- put player number in url immediately
-- put if computer player in url
 - detect if opponent online via polling
 - Display moves list (low)
 - Ability to change name
