@@ -370,8 +370,8 @@ function renderBoard()
                     //if (player == 0) { context2D.fillStyle = 'white'; };
                     //if (player == 1) { context2D.fillStyle = 'grey'; };
                     //context2D.fill();
-                    context2D.lineWidth = 1;
-                    context2D.strokeStyle = '#003300';
+                    context2D.lineWidth = 2;
+                    context2D.strokeStyle = 'white';
                     context2D.stroke();
                 }
             
