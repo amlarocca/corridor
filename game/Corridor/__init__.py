@@ -267,7 +267,10 @@ class Board():
     def check_goal_status(self,node,goal,trace=False):
         if trace:
             print 'checking goal status',node,goal
-        if ((goal[0] == 'h' and goal[1] == node[1]) or
+        # it's not a goal if a player is already there
+        if tuple(node) in [tuple(p.position) for p in self.players]:
+            return False
+        elif ((goal[0] == 'h' and goal[1] == node[1]) or
             (goal[0] == 'v' and goal[1] == node[0]) or
             (goal == node)):
             return True
