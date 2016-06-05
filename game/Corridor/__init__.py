@@ -94,7 +94,7 @@ class Board():
                                   self.players[player].goal,
                                   [],
                                   visited,
-                                  depth=len(self.players),
+                                  depth=len(self.players)+1,
                                   trace=trace)
         if trace:
             print 'visited nodes',visited

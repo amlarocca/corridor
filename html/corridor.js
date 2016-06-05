@@ -367,7 +367,7 @@ function renderBoard()
                     if (column / 2 == valid_move[0] && row / 2 == valid_move[1])
                     {
                         context2D.beginPath();
-                        context2D.arc(col_offset + (width/2), row_offset + (height/2), (width/2)-2, 0, 2 * Math.PI, false);
+                        context2D.arc(col_offset + (width/2), row_offset + (height/2), (width/2)-4, 0, 2 * Math.PI, false);
                         //if (player == 0) { context2D.fillStyle = 'white'; };
                         //if (player == 1) { context2D.fillStyle = 'grey'; };
                         //context2D.fill();
