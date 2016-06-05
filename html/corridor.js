@@ -179,7 +179,7 @@ already_polling = false;
 board_changed = false;
 function wait_for_opponent_move() {
     console.log('called wait_for_opponent_move, already polling:' + already_polling)
-    if (!already_polling) {
+    if (!already_polling & current_board.status != "completed") {
         already_polling = true;
         board_changed = false;
         poll(
