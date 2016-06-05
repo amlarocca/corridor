@@ -91,7 +91,7 @@ class Board():
         valid_moves = []
         shortest_paths = self.get_shortest_goal_paths(self.players[player].position,
                                                       self.players[player].goal,
-                                                      depth=len(self.players+1),
+                                                      depth=len(self.players)+1,
                                                       trace=trace)
         if trace:
             print 'got shortest paths',shortest_paths
