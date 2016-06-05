@@ -10,7 +10,6 @@ Web Application (HTML/CSS):
 - if game_mode = completed, don't allow moves, polling, show winner overlay, new game button
 - Scale board to screen size for phone
 - Errors messages glow a color and then fade
-- "Place Wall or Move Piece"
 - polling bug when user interacts
 - Highlight active player name and game piece
 - detect if opponent online via polling
