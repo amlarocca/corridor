@@ -31,6 +31,7 @@ def build_response(game_id,board,write=True):
     response['current_player'] = board.current_player
     response['winner'] = ''
     response['timestamp'] = board.timestamp
+    response['valid_moves'] = board.get_valid_moves(board.current_player)
     for player in range(len(board.players)):
         if board.check_player_goal_status(player):
             response['winner'] = player

@@ -22,6 +22,11 @@ function playComputer(checkbox)
     botMove()
 }
 
+function updateStatus(message) {
+    document.getElementById("statusMessage").textContent=message;
+        
+}
+
 function updateQueryStringParameter(uri, key, value) {
   var re = new RegExp("([?&])" + key + "=.*?(&|$)", "i");
   var separator = uri.indexOf('?') !== -1 ? "&" : "?";
@@ -94,9 +99,10 @@ function setupBoard(reset)
             updateStatus("Something went wrong: " + err);
           } else {
             //alert("Your query count: " + data.players);
-            if (!game_id || reset) {
+            if (!game_id || reset || !player_number_url) {
                 console.log('updating query string')
                 var new_uri = updateQueryStringParameter(window.location.href,'game_id',data.game_id);
+                var new_uri = updateQueryStringParameter(window.location.href,'player_number',player_number);
                 window.location.href = new_uri;
             } else {
                 current_board = data
@@ -107,24 +113,7 @@ function setupBoard(reset)
         }
     });
 }
-function renderWallSelector() {
-    var walltype = document.getElementById("walltype");
-    walltype.setAttribute('width', 2*cell_width);
-    walltype.setAttribute('height', 2*cell_width);
-    var wallContext = walltype.getContext("2d");
-    wallContext.fillStyle = "black";
-    center = cell_width - (wall_width / 2)
-    if (wall_type == "H") {
-      wallContext.fillRect(0, center, 2* cell_width,wall_width);
-    } else if (wall_type == "V") {      
-      wallContext.fillRect(center, 0, wall_width, 2*cell_width);
-    }
-    wallContext.font = "30px Arial";
-    if (current_board.players) {
-        wallContext.fillText(current_board.players[player_number].walls,2*cell_width-18,2*cell_width-2);
-    }
-  
-};
+
 var getJSON = function(url, callback) {
     var xhr = new XMLHttpRequest();
     xhr.open("get", url, true);
@@ -217,10 +206,6 @@ function wait_for_opponent_move() {
     }
 }
 
-function updateStatus(message) {
-    document.getElementById("statusMessage").textContent=message;
-        
-}
 
 function botMove()
 {
@@ -415,3 +400,22 @@ function renderBoard()
         updateStatus("Player " + (current_board.winner + 1) + " Wins!")
     }
 }
+
+function renderWallSelector() {
+    var walltype = document.getElementById("walltype");
+    walltype.setAttribute('width', 2*cell_width);
+    walltype.setAttribute('height', 2*cell_width);
+    var wallContext = walltype.getContext("2d");
+    wallContext.fillStyle = "black";
+    center = cell_width - (wall_width / 2)
+    if (wall_type == "H") {
+      wallContext.fillRect(0, center, 2* cell_width,wall_width);
+    } else if (wall_type == "V") {      
+      wallContext.fillRect(center, 0, wall_width, 2*cell_width);
+    }
+    wallContext.font = "30px Arial";
+    if (current_board.players) {
+        wallContext.fillText(current_board.players[player_number].walls,2*cell_width-18,2*cell_width-2);
+    }
+  
+};

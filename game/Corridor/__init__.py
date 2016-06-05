@@ -87,6 +87,18 @@ class Board():
                         pass
         return goal_reached
 
+    def get_valid_moves(self,player,trace=False):
+        valid_moves = []
+        shortest_paths = self.get_shortest_goal_paths(self.players[player].position,
+                                                      self.players[player].goal,
+                                                      depth=len(self.players),
+                                                      trace=trace)
+        if trace:
+            print 'got shortest paths',shortest_paths
+        for path in shortest_paths:
+            valid_moves.append(path[1]
+        return valid_moves   
+        
     def can_move_player(self,player,x,y,allow_overlap=False,trace=False):            
         return self.can_move(self.players[player].position,x,y,allow_overlap=allow_overlap,trace=trace)
     
@@ -103,6 +115,7 @@ class Board():
             
         opp_positions = [tuple(self.players[opponent].position) for opponent in range(len(self.players))]# if opponent != player]
         
+        # Player is allowed to occupy their current location (different than above in path finding
         opp_positions.append(tuple(current))
         
         # 3. Player must not end in same place as another player
