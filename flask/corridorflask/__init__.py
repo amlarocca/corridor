@@ -130,7 +130,8 @@ def bot_move():
     opponent = request.json['opponent']
     move_num = request.json['move_num']
     game_id = request.json['game_id']
-    try:        
+    if True:
+    #try:        
         if game_id:
             b = get_board_from_redis(game_id)
         else:
@@ -139,8 +140,8 @@ def bot_move():
         bot = CorridorBot()
         bot.make_move(b,player,opponent,move_num,trace=True)
         b.status = "active"
-    except:
-        abort(400,str(sys.exc_info()))
+    #except:
+    #    abort(400,str(sys.exc_info()))
     return build_response(game_id,b)
 
 @app.errorhandler(400)
