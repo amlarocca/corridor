@@ -4,9 +4,6 @@
 
 # TODO
 
-Game Libary:
-- Bug: jumping opponent occasional (keep ALL shortest paths)
-
 Web Application (HTML/CSS):
 - if game_mode = not started, option to: switch sides / get a link / play computer
   - already polling at this point so game can start at any time if link joined or in "public mode"
