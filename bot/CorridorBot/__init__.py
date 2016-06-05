@@ -88,7 +88,7 @@ class CorridorBot():
                 # For now let's only support hopping one player (2 person game)
                 move = goal[2]
             if move:
-		print 'Moving',current_player,'to',(move[0],move[1])
+		        print 'Moving',current_player,'to',(move[0],move[1])
                 b.move_player(current_player,move[0],move[1])
             else:
                 raise ValueError('No Path to Goal')
@@ -114,7 +114,8 @@ class CorridorBot():
             board.shortest_goal_paths(board.players[player].position,
                                       board.players[player].goal,[],visited,depth=i,trace=trace)
             goals = [visited[node] for node in visited 
-                     if board.check_goal_status(node,board.players[player].goal)]
+                     if (board.check_goal_status(node,board.players[player].goal) and
+                         tuple(node) not in set([tuple(p.position) for p in board.players]))]
             if len(goals) > 0:
                 break
 

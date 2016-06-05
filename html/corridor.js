@@ -9,7 +9,7 @@ var wall_width = 11
 var current_board = {}
 var move_num = 1
 var wall_type = "H"
-var player_number = 1
+var player_number = 0
 var botDelay = 500
 var play_computer = false
 var api_url = "http://corridor.zensky.com/corridor/"
@@ -19,7 +19,9 @@ window.onload = initializeBoard;
 function playComputer(checkbox)
 {
     play_computer = checkbox.checked
-    botMove()
+    var new_uri = updateQueryStringParameter(window.location.href,'play_computer',play_computer);
+    window.location.href = new_uri;
+    //botMove()
 }
 
 function updateStatus(message) {
@@ -93,6 +95,11 @@ function setupBoard(reset)
     if (player_number_url != '') {
         player_number = parseInt(player_number_url)
     }
+    play_computer_url = getParameterByName('play_computer')
+    if (play_computer_url != '') {
+        play_computer = (play_computer_url == "true")
+        document.getElementById("play_computer").checked = play_computer;
+    }
     getJSON(url,
     function(err, data) {
           if (err != null) {
@@ -101,9 +108,11 @@ function setupBoard(reset)
             //alert("Your query count: " + data.players);
             if (!game_id || reset || !player_number_url) {
                 console.log('updating query string')
-                var new_uri = updateQueryStringParameter(window.location.href,'game_id',data.game_id);
-                var new_uri = updateQueryStringParameter(window.location.href,'player_number',player_number);
-                window.location.href = new_uri;
+                current_uri = window.location.href
+                current_uri = updateQueryStringParameter(current_uri,'game_id',data.game_id);
+                current_uri = updateQueryStringParameter(current_uri,'player_number',player_number);
+                current_uri = updateQueryStringParameter(current_uri,'play_computer',play_computer);
+                window.location.href = current_uri
             } else {
                 current_board = data
                 renderBoard()
