@@ -4,8 +4,8 @@
 // should be same search as computer does when evaluating.
 
 var size = 9
-var cell_width = 33
-var wall_width = 11
+var cell_width = 66
+var wall_width = 22
 var current_board = {}
 var move_num = 1
 var wall_type = "H"
@@ -15,6 +15,7 @@ var play_computer = false
 var api_url = "http://corridor.zensky.com/corridor/"
 
 window.onload = initializeBoard;
+window.onresize = renderBoard;
 
 function playComputer(checkbox)
 {
@@ -55,7 +56,7 @@ function getParameterByName(name) {
 function initializeBoard()
 {
     var wallselector = document.getElementById('wallselector');
-
+    
     wallselector.style.cursor = 'pointer';
     wallselector.onclick = function() {
         if (wall_type == "H") {
@@ -328,6 +329,11 @@ function boardClicked(event) {
 
 function renderBoard()
 { 
+
+    var boardWidth = document.getElementById('gameboard').clientWidth
+    wall_width = boardWidth / ((4 * size) - 1)
+    cell_width = 3 * wall_width
+    
     console.log('Rendering board with timestamp: ', current_board.timestamp)
     var canvas = document.getElementById("corridor");
     var totalWidth = size * cell_width + (size -1) * wall_width
@@ -436,8 +442,10 @@ function renderBoard()
 
 function renderWallSelector() {
     var walltype = document.getElementById("walltype");
-    walltype.setAttribute('width', 2*cell_width);
-    walltype.setAttribute('height', 2*cell_width);
+    var wallSelectorWidth = document.getElementById('wallselector').clientWidth
+    console.log('wallSelectorWidth' + wallSelectorWidth)
+    walltype.setAttribute('width', 2 * cell_width);
+    walltype.setAttribute('height', 2 * cell_width);
     var wallContext = walltype.getContext("2d");
     wallContext.fillStyle = "black";
     center = cell_width - (wall_width / 2)
@@ -446,9 +454,17 @@ function renderWallSelector() {
     } else if (wall_type == "V") {      
       wallContext.fillRect(center, 0, wall_width, 2*cell_width);
     }
+    wallText = current_board.players[player_number].walls;
     wallContext.font = "30px Arial";
+    //var metrics = wallContext.measureText("8");
+
+    //var scalex = (metrics.width / walltype.width);
+    //var scaley = (metrics.height / walltype.height);
+
+    //wallContext.scale(scalex, scaley);
+    //wallContext.fillText(wallText,0, 20);
     if (current_board.players) {
-        wallContext.fillText(current_board.players[player_number].walls,2*cell_width-18,2*cell_width-2);
+        wallContext.fillText(wallText,2*cell_width-18,2*cell_width-2);
     }
   
 };
